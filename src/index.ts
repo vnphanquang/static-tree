@@ -1,5 +1,12 @@
-interface TNodeInit {
+export type DeepRecord<T> = {
+  [key: string]: T | DeepRecord<T>;
+};
+
+export type Serializable = DeepRecord<string | number | Array<Serializable>>;
+
+interface TNodeInit<D extends Record<string, any> = {}> {
   parent?: TNode;
+  data?: D;
 }
 
 interface TNodeGetPathParams {
@@ -10,6 +17,7 @@ interface TNodeGetPathParams {
 interface MinimalSerializedTNode {
   key: string;
   children: MinimalSerializedTNode[];
+  data: Serializable;
 }
 
 interface VerboseSerializedTNode extends MinimalSerializedTNode {
@@ -23,20 +31,23 @@ interface VerboseSerializedTNode extends MinimalSerializedTNode {
 type SerializedTNode = VerboseSerializedTNode | MinimalSerializedTNode;
 
 interface TNodeSerializeOptions<V extends boolean> {
+  dataSerializer?: true | (<D extends Record<string, any> = {}>(node: TNode<D>) => Serializable);
   verbose?: V;
 }
 
-class TNode {
+class TNode<D extends Record<string, any> = {}> {
   private _parent: TNode | null;
   private _key: string;
   private _depth: number;
   private _pathSegments: string[];
   private _children: TNode[];
+  private _data: D;
 
-  constructor(key: string, options: TNodeInit = {}) {
-    const { parent } = options;
+  constructor(key: string, options: TNodeInit<D> = {}) {
+    const { parent, data } = options;
     this._children = [];
     this._key = key;
+    this._data = data ?? ({} as any);
     this.onParentChange(parent);
   }
 
@@ -60,6 +71,11 @@ class TNode {
   private __addChildren(...nodes: TNode[]): TNode {
     this.__children().push(...nodes);
     return this;
+  }
+
+  private __setData<NewData extends Record<string, any>>(data: NewData): TNode<NewData> {
+    this._data = data as any;
+    return this as TNode<NewData>;
   }
 
   private __key(): string {
@@ -98,16 +114,23 @@ class TNode {
   }
 
   private __serialize<M extends boolean>(options: TNodeSerializeOptions<M> = {}): M extends true ? VerboseSerializedTNode : MinimalSerializedTNode {
-    const { verbose } = options;
+    const { verbose, dataSerializer } = options;
+    let data: Serializable = undefined;
+    if (typeof dataSerializer === 'boolean' && dataSerializer) {
+      data = this._data;
+    } else if (typeof dataSerializer === 'function') {
+      data = dataSerializer(this);
+    }
     return {
       key: this.__key(),
       children: this.__children().map(c => c.__serialize(options)),
+      data,
       ...(verbose && {
         depth: this.__depth(),
         isRoot: this.__isRoot(),
         path: this.__path(),
         pathSegments: this._pathSegments,
-      })
+      }),
     } as M extends true ? VerboseSerializedTNode : MinimalSerializedTNode;
   }
 
@@ -131,58 +154,70 @@ class TNode {
       isRoot: this.__isRoot.bind(this) as typeof this.__isRoot,
       root: this.__root.bind(this) as typeof this.__root,
       serialize: this.__serialize.bind(this) as typeof this.__serialize,
+      data: () => this._data,
       __setParent: this.__setParent.bind(this) as typeof this.__setParent,
       __addChildren: this.__addChildren.bind(this) as typeof this.__addChildren,
+      __setData: this.__setData.bind(this) as typeof this.__setData,
     };
   }
 }
 
-type ExtendedTNode<M extends Record<string, ExtendedTNode> = {}> = TNode & M;
+type ExtendedTNode<M extends Record<string, ExtendedTNode> = {}, D extends Record<string, any> = {}> = TNode<D> & M;
 
-class TNodeBuilder<ChildrenMap extends Record<string, ExtendedTNode> = {}> {
+class TNodeBuilder<RootM extends Record<string, ExtendedTNode> = {}, RootD extends Record<string, any> = {}> {
   private node: ExtendedTNode;
 
   constructor(key: string, parent?: TNode) {
     this.node = new TNode(key, { parent });
   }
 
-  addNode<K extends string, M extends Record<string, ExtendedTNode>>(
+  public addChild<K extends string, M extends Record<string, ExtendedTNode>, D extends Record<string, any> = {}>(
     key: K,
-    build?: ((builder: TNodeBuilder) => TNodeBuilder<M>)
-  ): TNodeBuilder<ChildrenMap & Record<K, ExtendedTNode<M>>> {
+    build?: ((builder: TNodeBuilder) => TNodeBuilder<M, D>),
+  ): TNodeBuilder<RootM & Record<K, ExtendedTNode<M, D>>, RootD> {
     const node = build?.(new TNodeBuilder(key, this.node))?.build() ?? new TNode(key, { parent: this.node });
     (this.node as any)[key] = node;
     this.node.$.__addChildren(node);
-    return this as unknown as TNodeBuilder<ChildrenMap & Record<K, ExtendedTNode<M>>>;
+    return this as unknown as TNodeBuilder<RootM & Record<K, ExtendedTNode<M, D>>, RootD>;
   }
 
-  build(): ExtendedTNode<ChildrenMap> {
-    return this.node as ExtendedTNode<ChildrenMap>;
+  public addData<D extends Record<string, any>>(data: D): TNodeBuilder<RootM, D> {
+    this.node.$.__setData(data);
+    return this as TNodeBuilder<RootM, D>;
+  }
+
+  public build(): ExtendedTNode<RootM, RootD> {
+    return this.node as ExtendedTNode<RootM, RootD>;
   }
 }
 
-function buildStaticTree<M extends Record<string, ExtendedTNode> = {}>(
-  build: (builder: TNodeBuilder) => TNodeBuilder<M>,
-  rootKey = 'root',
-): ExtendedTNode<M> {
-  return build(new TNodeBuilder(rootKey)).build();
+function buildStaticTree<M extends Record<string, ExtendedTNode>, D extends Record<string, any>>(
+  build: (builder: TNodeBuilder) => TNodeBuilder<M, D>,
+  key = 'root',
+): ExtendedTNode<M, D> {
+  return build(new TNodeBuilder(key)).build();
 }
 
-// const tt = buildStaticTree((builder) =>
-//   builder
-//     .addNode(
+// const tt = buildStaticTree((builder) => builder
+//     .addChild(
 //       'child',
-//       (builder) => builder.addNode(
+//       (builder) => builder.addChild(
 //         'grandchild',
 //         (builder) => builder
-//           .addNode('grandgrandchild')
-//           .addNode('grandgrandchildTwo')
-//           .addNode('grandgrandchildThree'),
-//     ).addNode(
+//           .addChild('grandgrandchild')
+//           .addChild('grandgrandchildTwo')
+//           .addChild('grandgrandchildThree')
+//           .addData({ a: 1, b: 2, c: 3 })
+//     ).addChild(
 //       'grandchildTwo',
-//     )
+//     ).addData({
+//       text: 'abcde',
+//     } as const)
 //   ),
 // );
+
+// const data = tt.child.grandchild.$.data();
+// const tData = tt.child.$.data()
 
 // const k = tt.child.grandchild.grandgrandchildThree.$.path();
 
