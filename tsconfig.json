@@ -1,6 +1,12 @@
 {
   "$schema": "http://json.schemastore.org/tsconfig",
-  "include": ["src/**/*.ts", "src/**/*.d.ts", ".eslintrc.js", "prettier.config.js"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    ".eslintrc.js",
+    "prettier.config.js",
+    "vite.config.ts"
+  ],
   "compilerOptions": {
     "moduleResolution": "node",
     "module": "CommonJS",
