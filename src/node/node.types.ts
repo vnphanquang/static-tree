@@ -16,10 +16,12 @@ type DeepRecord<T> = {
   [key: string]: T | DeepRecord<T>;
 };
 
-export type Serializable = DeepRecord<string | number | Array<Serializable>>;
+export type Serializable = DeepRecord<
+  string | number | boolean | boolean | Array<Serializable> | ReadonlyArray<Serializable>
+>;
 
 export interface TNodeSerializeOptions<V extends boolean> {
-  dataSerializer?: true | (<D extends Record<string, any> = {}>(node: TNode<D>) => Serializable);
+  dataSerializer?: false | (<D extends Record<string, any> = {}>(node: TNode<D>) => Serializable);
   verbose?: V;
 }
 

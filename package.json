@@ -6,9 +6,9 @@
   "scripts": {
     "lint": "eslint **/*.{ts,js,cjs}",
     "format": "prettier --check \"./**/*.{ts,js,cjs,json}\"",
-    "test": "vitest",
-    "test:ui": "vitest --ui",
-    "test:run": "vitest run"
+    "test": "vitest --coverage",
+    "test:ui": "vitest --ui --coverage",
+    "test:run": "vitest run --coverage"
   },
   "keywords": [
     "typescript",
@@ -23,6 +23,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^18.7.3",
+    "@vitest/coverage-istanbul": "^0.22.1",
     "@vitest/ui": "^0.22.0",
     "@vnphanquang/eslint-config": "^1.1.0",
     "eslint": "^8.22.0",

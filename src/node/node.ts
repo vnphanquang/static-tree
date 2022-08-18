@@ -28,7 +28,14 @@ export class TNode<Data extends TNodeData = {}> {
   }
 
   private onParentChange(node?: TNode) {
+    const oldParent = this._parent;
+    if (oldParent && oldParent.__children().includes(this)) {
+      oldParent.__removeChildren(this);
+    }
     this._parent = node ?? null;
+    if (this._parent && !this._parent.__children().includes(this)) {
+      this._parent.__children().push(this);
+    }
     this._depth = (this._parent?.__depth() ?? 0) + 1;
 
     this._pathSegments = [this.__key()];
@@ -46,6 +53,17 @@ export class TNode<Data extends TNodeData = {}> {
 
   private __addChildren(...nodes: TNode[]): TNode {
     this.__children().push(...nodes);
+    for (const node of nodes) {
+      node.__setParent(this);
+    }
+    return this;
+  }
+
+  private __removeChildren(...nodes: TNode[]): TNode {
+    this._children = this._children.filter((n) => nodes.every((r) => r != n));
+    for (const node of nodes) {
+      node.__setParent(null);
+    }
     return this;
   }
 
@@ -73,7 +91,13 @@ export class TNode<Data extends TNodeData = {}> {
   private __path(params: TNodeGetPathParams = {}): string {
     const { depth = this._pathSegments.length, separator = '/' } = params;
     const len = this._pathSegments.length;
-    return this._pathSegments.slice(len - depth, len).join(separator);
+    let start = len - Math.min(depth, len);
+    let end = len;
+    if (depth < 0) {
+      start = 0;
+      end = len + Math.max(depth, -len);
+    }
+    return this._pathSegments.slice(start, end).join(separator);
   }
 
   private __isRoot(): boolean {
@@ -92,9 +116,9 @@ export class TNode<Data extends TNodeData = {}> {
     options: TNodeSerializeOptions<M> = {},
   ): M extends true ? VerboseSerializedTNode : MinimalSerializedTNode {
     const { verbose, dataSerializer } = options;
-    let data: Serializable = undefined;
-    if (typeof dataSerializer === 'boolean' && dataSerializer) {
-      data = this._data;
+    let data: Serializable = this._data;
+    if (typeof dataSerializer === 'boolean' && dataSerializer === false) {
+      data = {};
     } else if (typeof dataSerializer === 'function') {
       data = dataSerializer(this);
     }
@@ -112,8 +136,8 @@ export class TNode<Data extends TNodeData = {}> {
   }
 
   public static from(serialized: SerializedTNode, parent?: TNode) {
-    const { key, children } = serialized;
-    const node = new TNode(key, { parent });
+    const { key, children, data } = serialized;
+    const node = new TNode(key, { parent, data });
     for (const child of children) {
       const childNode = TNode.from(child, node);
       node.__addChildren(childNode);
@@ -125,16 +149,22 @@ export class TNode<Data extends TNodeData = {}> {
     return {
       key: this.__key.bind(this) as typeof this.__key,
       depth: this.__depth.bind(this) as typeof this.__depth,
-      parent: this.__parent.bind(this) as typeof this.__parent,
-      children: this.__children.bind(this) as typeof this.__children,
       path: this.__path.bind(this) as typeof this.__path,
-      isRoot: this.__isRoot.bind(this) as typeof this.__isRoot,
       root: this.__root.bind(this) as typeof this.__root,
+      isRoot: this.__isRoot.bind(this) as typeof this.__isRoot,
+      children: this.__children.bind(this) as typeof this.__children,
+      parent: this.__parent.bind(this) as typeof this.__parent,
       serialize: this.__serialize.bind(this) as typeof this.__serialize,
       data: () => this._data,
-      __setParent: this.__setParent.bind(this) as typeof this.__setParent,
-      __addChildren: this.__addChildren.bind(this) as typeof this.__addChildren,
-      __setData: this.__setData.bind(this) as typeof this.__setData,
+    };
+  }
+
+  public get __() {
+    return {
+      setParent: this.__setParent.bind(this) as typeof this.__setParent,
+      addChildren: this.__addChildren.bind(this) as typeof this.__addChildren,
+      removeChildren: this.__removeChildren.bind(this) as typeof this.__removeChildren,
+      setData: this.__setData.bind(this) as typeof this.__setData,
     };
   }
 }

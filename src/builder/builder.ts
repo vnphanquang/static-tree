@@ -27,12 +27,10 @@ export class ExtendedTNodeBuilder<
     Data
   > {
     const node =
-      build?.(new ExtendedTNodeBuilder(key, this.node))?.build() ??
+      build?.(new ExtendedTNodeBuilder(key, this.node)).build() ??
       new TNode(key, { parent: this.node });
 
     (this.node as any)[key] = node;
-
-    this.node.$.__addChildren(node);
 
     return this as unknown as ExtendedTNodeBuilder<
       ChildrenRecord & Record<ChildKey, ExtendedTNode<GrandChildrenRecord, ChildData>>,
@@ -40,8 +38,8 @@ export class ExtendedTNodeBuilder<
     >;
   }
 
-  public addData<D extends Record<string, any>>(data: D): ExtendedTNodeBuilder<ChildrenRecord, D> {
-    this.node.$.__setData(data);
+  public addData<D extends TNodeData>(data: D): ExtendedTNodeBuilder<ChildrenRecord, D> {
+    this.node.__.setData(data);
     return this as ExtendedTNodeBuilder<ChildrenRecord, D>;
   }
 
