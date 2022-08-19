@@ -7,7 +7,7 @@ export default defineConfig({
   test: {
     coverage: {
       provider: 'istanbul', // or 'c8'
-      reporter: ['html', 'text'],
+      reporter: ['text', 'lcov'],
     },
   },
 });
