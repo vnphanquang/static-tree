@@ -191,7 +191,7 @@ export class TNode<Data extends TNodeData = {}> {
    * @returns path
    */
   private $path(params: TNodeGetPathParams = {}): string {
-    const { depth = this._pathSegments.length, separator = '/' } = params;
+    const { depth = this._pathSegments.length, separator = '/', reversed = false } = params;
     const len = this._pathSegments.length;
     let start = len - Math.min(depth, len);
     let end = len;
@@ -199,7 +199,9 @@ export class TNode<Data extends TNodeData = {}> {
       start = 0;
       end = len + Math.max(depth, -len);
     }
-    return this._pathSegments.slice(start, end).join(separator);
+    let segments = this._pathSegments.slice(start, end);
+    if (reversed) segments = segments.reverse();
+    return segments.join(separator);
   }
 
   /**

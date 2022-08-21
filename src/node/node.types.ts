@@ -53,6 +53,17 @@ export interface TNodeGetPathParams {
    * ```
    */
   depth?: number;
+  /**
+   * Whether to reverse the constructed path. Defaults to `false`
+   *
+   * @example
+   *
+   * ```typescript
+   * // for a branch such as: root -\> child -\> grandChild -\> node
+   * node.$.path({ reversed: true }); // -\> 'node/grandChild/child/root'
+   * ```
+   */
+  reversed?: boolean;
 }
 
 /**

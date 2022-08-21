@@ -78,6 +78,10 @@ describe.concurrent('TNode | $.path', () => {
   test('with custom 0 depth', () => {
     expect(grandChild.$.path({ depth: 0 })).toBe('');
   });
+
+  test('with reversed option', () => {
+    expect(grandChild.$.path({ reversed: true })).toBe('grandChild/child/root');
+  });
 });
 
 describe.concurrent('TNode | $.root', () => {
