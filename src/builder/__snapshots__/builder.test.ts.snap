@@ -1,0 +1,182 @@
+// Vitest Snapshot v1
+
+exports[`tBuild > serialization should match 1`] = `
+{
+  "children": [
+    {
+      "children": [
+        {
+          "children": [],
+          "data": {},
+          "depth": 3,
+          "isRoot": false,
+          "key": "justKey",
+          "path": "key/child/justKey",
+          "pathSegments": [
+            "key",
+            "child",
+            "justKey",
+          ],
+        },
+        {
+          "children": [],
+          "data": {},
+          "depth": 3,
+          "isRoot": false,
+          "key": "inputJustKey",
+          "path": "key/child/inputJustKey",
+          "pathSegments": [
+            "key",
+            "child",
+            "inputJustKey",
+          ],
+        },
+        {
+          "children": [],
+          "data": {},
+          "depth": 3,
+          "isRoot": false,
+          "key": "external",
+          "path": "key/child/external",
+          "pathSegments": [
+            "key",
+            "child",
+            "external",
+          ],
+        },
+        {
+          "children": [
+            {
+              "children": [],
+              "data": {},
+              "depth": 4,
+              "isRoot": false,
+              "key": "tBuildInputJustKey",
+              "path": "key/child/tBuild/tBuildInputJustKey",
+              "pathSegments": [
+                "key",
+                "child",
+                "tBuild",
+                "tBuildInputJustKey",
+              ],
+            },
+            {
+              "children": [],
+              "data": {},
+              "depth": 4,
+              "isRoot": false,
+              "key": "tBuildJustKey",
+              "path": "key/child/tBuild/tBuildJustKey",
+              "pathSegments": [
+                "key",
+                "child",
+                "tBuild",
+                "tBuildJustKey",
+              ],
+            },
+            {
+              "children": [],
+              "data": {},
+              "depth": 4,
+              "isRoot": false,
+              "key": "tBuildWithBuilder",
+              "path": "key/child/tBuild/tBuildWithBuilder",
+              "pathSegments": [
+                "key",
+                "child",
+                "tBuild",
+                "tBuildWithBuilder",
+              ],
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "data": {},
+                  "depth": 5,
+                  "isRoot": false,
+                  "key": "final",
+                  "path": "key/child/tBuild/tBuildFull/final",
+                  "pathSegments": [
+                    "key",
+                    "child",
+                    "tBuild",
+                    "tBuildFull",
+                    "final",
+                  ],
+                },
+              ],
+              "data": {},
+              "depth": 4,
+              "isRoot": false,
+              "key": "tBuildFull",
+              "path": "key/child/tBuild/tBuildFull",
+              "pathSegments": [
+                "key",
+                "child",
+                "tBuild",
+                "tBuildFull",
+              ],
+            },
+          ],
+          "data": {},
+          "depth": 3,
+          "isRoot": false,
+          "key": "tBuild",
+          "path": "key/child/tBuild",
+          "pathSegments": [
+            "key",
+            "child",
+            "tBuild",
+          ],
+        },
+      ],
+      "data": {},
+      "depth": 2,
+      "isRoot": false,
+      "key": "child",
+      "path": "key/child",
+      "pathSegments": [
+        "key",
+        "child",
+      ],
+    },
+  ],
+  "data": {
+    "array": [
+      {
+        "id": "test",
+      },
+    ],
+    "boolean": true,
+    "number": 1,
+    "object": {
+      "nested": "nested",
+    },
+    "specials": {
+      "date": 2022-08-18T00:00:00.000Z,
+      "function": [Function],
+      "map": Map {},
+      "node": TNode {
+        "_children": [],
+        "_data": {},
+        "_depth": 1,
+        "_key": "example",
+        "_parent": null,
+        "_pathSegments": [
+          "example",
+        ],
+      },
+      "set": Set {},
+    },
+    "string": "string",
+  },
+  "depth": 1,
+  "isRoot": true,
+  "key": "key",
+  "path": "key",
+  "pathSegments": [
+    "key",
+  ],
+}
+`;

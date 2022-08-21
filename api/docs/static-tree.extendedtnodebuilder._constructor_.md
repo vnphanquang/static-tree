@@ -9,13 +9,13 @@ Constructs a new instance of the `ExtendedTNodeBuilder` class
 <b>Signature:</b>
 
 ```typescript
-constructor(key: string, parent?: TNode);
+constructor(key: Key, parent?: TNode);
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  key | string | key for the [ExtendedTNode](./static-tree.extendedtnode.md) to be built |
+|  key | Key | key for the [ExtendedTNode](./static-tree.extendedtnode.md) to be built |
 |  parent | [TNode](./static-tree.tnode.md) | <i>(Optional)</i> parent [TNode](./static-tree.tnode.md) to attach to |
 

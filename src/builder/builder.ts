@@ -3,7 +3,7 @@
 import { TNode } from '../node';
 import type { TNodeData } from '../node';
 
-import type { ExtendedTNode } from './builder.types';
+import type { ExtendedTNode, ExtendedTNodeBuildInput, TBuildOutput } from './builder.types';
 
 /**
  * @public
@@ -12,7 +12,7 @@ import type { ExtendedTNode } from './builder.types';
  *
  * @remarks
  *
- * This is used internally by {@link buildStaticTree}. Alternatively, this can
+ * This is used internally by {@link tBuild}. Alternatively, this can
  * be used if a more method-based, verbose solution is preferred.
  *
  * @example
@@ -22,54 +22,104 @@ import type { ExtendedTNode } from './builder.types';
  *
  * const node = new ExtendedTNodeBuilder('key')
  *   .addData({ number: 1, boolean: true, string: 'string' })
- *   .addChild('childOne', builder => builder.addData({ childData: 'something else' }))
+ *   .addChild({
+ *      key: 'childOne',
+ *      build: (builder) => builder
+ *        .addData({ childData: 'something else' })
+ *        .addChildren('grandChild),
+ *   })
  *   .addChild('childTwo', builder => builder.addChild('grandChild'))
  *   .build();
  * ```
  *
  * @example
  *
- * For advanced usage, `ExtendedTNodeBuilder` can also be used in place of
- * the `build` callback in `addChild`, should it provide any benefit.
- *
- * Be careful, however, as key-mismatch might be a problem.
- * Below, a `externalKey` const is to avoid having different key in
- * ExtendedTNodeBuilder & buildStaticTree.
+ * For advanced usage, `ExtendedTNodeBuilder` can also be used
+ * as the input in `addChild`, should it provide any benefit.
  *
  * ```typescript
- * const externalKey = 'external';
+ * import { tBuild, ExtendedTNodeBuilder } from 'static-tree';
  *
- * const externalBuilder = new ExtendedTNodeBuilder(externalKey)
+ * const externalBuilder = new ExtendedTNodeBuilder('external')
  *  .addData({ some: 'some' })
  *  .addChild('someChild');
  *
- * const tree = buildStaticTree(
- *   (builder) => builder.addChild(externalKey, () => externalBuilder),
- *   'root',
- * );
+ * const { node } = tBuild({
+ *   key: 'root',
+ *   build: (builder) => builder.addChild(externalBuilder),
+ * });
  *
- * tree.external.someChild.$.path(); // -\> `root/external/someChild`
+ * node.external.someChild.$.path(); // -\> `root/external/someChild`
  * ```
  */
 export class ExtendedTNodeBuilder<
+  Key extends string,
   ChildrenRecord extends Record<string, ExtendedTNode> = {},
   Data extends TNodeData = {},
 > {
-  private node: ExtendedTNode;
+  private _node: ExtendedTNode;
+  private _key: Key;
 
   /**
    * @param key - key for the {@link ExtendedTNode} to be built
    * @param parent - parent {@link TNode} to attach to
    */
-  constructor(key: string, parent?: TNode) {
-    this.node = new TNode(key, { parent });
+  constructor(key: Key, parent?: TNode) {
+    this._node = new TNode(key, { parent });
+    this._key = key;
   }
 
   /**
    * add a type-safe child to the {@link ExtendedTNode} to be built
    *
-   * @param key - key for child node
-   * @param build - instruction for how child node is built
+   * @example
+   *
+   * `addChild` with just a key (no nested children, no internal data)
+   *
+   * ```typescript
+   * import { tBuild } from 'static-tree';
+   *
+   * const { node } = tBuild({
+   *   key: 'root',
+   *   build: (builder) => builder.addChild('child'),
+   * });
+   * ```
+   *
+   * @example
+   *
+   * `addChild` with a build callback for nested children & adding data
+   *
+   * ```typescript
+   * import { tBuild } from 'static-tree';
+   *
+   * const { node } = tBuild({
+   *   key: 'root',
+   *   build: (builder) => builder
+   *     .addChild({
+   *        key: 'child',
+   *        build: (builder) => builder
+   *          .addData({ some: 'child data' })
+   *          .addChild('grandChildren'),
+   *     }),
+   * });
+   * ```
+   *
+   * @example
+   *
+   * `addChild` with external `ExtendedTNodeBuilder` (advanced use case)
+   *
+   * ```typescript
+   * import { tBuild, ExtendedTNodeBuilder } from 'static-tree';
+   *
+   * const externalBuilder = new ExtendedTNodeBuilder('external');
+   *
+   * const { node } = tBuild({
+   *   key: 'root',
+   *   build: (builder) => builder.addChildren(externalBuilder),
+   * });
+   * ```
+   *
+   * @param input - an {@link ExtendedTNodeBuildInput} instruction
    * @returns this {@link ExtendedTNodeBuilder}
    */
   public addChild<
@@ -77,19 +127,33 @@ export class ExtendedTNodeBuilder<
     GrandChildrenRecord extends Record<string, ExtendedTNode>,
     ChildData extends TNodeData = {},
   >(
-    key: ChildKey,
-    build?: (builder: ExtendedTNodeBuilder) => ExtendedTNodeBuilder<GrandChildrenRecord, ChildData>,
+    input: ExtendedTNodeBuildInput<ChildKey, GrandChildrenRecord, ChildData>,
   ): ExtendedTNodeBuilder<
+    Key,
     ChildrenRecord & Record<ChildKey, ExtendedTNode<GrandChildrenRecord, ChildData>>,
     Data
   > {
-    const node =
-      build?.(new ExtendedTNodeBuilder(key, this.node)).build() ??
-      new TNode(key, { parent: this.node });
+    let key: ChildKey;
+    let node: TNode;
 
-    (this.node as any)[key] = node;
+    if (typeof input === 'string') {
+      key = input;
+      node = new ExtendedTNodeBuilder(key, this._node).build();
+    } else if (input instanceof ExtendedTNodeBuilder) {
+      key = input._key;
+      node = input.build();
+      node.__.setParent(this._node);
+    } else {
+      key = input.key;
+      node =
+        input.build?.(new ExtendedTNodeBuilder(key, this._node)).build() ??
+        new TNode(key, { parent: this._node });
+    }
+
+    (this._node as any)[key] = node;
 
     return this as unknown as ExtendedTNodeBuilder<
+      Key,
       ChildrenRecord & Record<ChildKey, ExtendedTNode<GrandChildrenRecord, ChildData>>,
       Data
     >;
@@ -98,20 +162,38 @@ export class ExtendedTNodeBuilder<
   /**
    * add type-safe data to the {@link ExtendedTNode} to be built
    *
+   * @example
+   *
+   * Using `tBuild`
+   *
+   * ```typescript
+   * import { tBuild } from 'static-tree';
+   *
+   * const { node } = tBuild({
+   *   key: 'root',
+   *   build: (builder) => builder.addData({ some: 'data' }),
+   * });
+   * ```
+   *
+   * @example
+   *
+   * Using `ExtendedTNodeBuilder`
+   *
    * @param data - the {@link TNodeData}
    * @returns this {@link ExtendedTNodeBuilder}
    */
-  public addData<D extends TNodeData>(data: D): ExtendedTNodeBuilder<ChildrenRecord, D> {
-    this.node.__.setData(data);
-    return this as ExtendedTNodeBuilder<ChildrenRecord, D>;
+  public addData<D extends TNodeData>(data: D): ExtendedTNodeBuilder<Key, ChildrenRecord, D> {
+    this._node.__.setData(data);
+    return this as ExtendedTNodeBuilder<Key, ChildrenRecord, D>;
   }
 
   /**
    * Build the {@link ExtendedTNode}
+   *
    * @returns node {@link ExtendedTNode}
    */
   public build(): ExtendedTNode<ChildrenRecord, Data> {
-    return this.node as ExtendedTNode<ChildrenRecord, Data>;
+    return this._node as ExtendedTNode<ChildrenRecord, Data>;
   }
 }
 
@@ -120,28 +202,78 @@ export class ExtendedTNodeBuilder<
  *
  * Build helper that uses {@link ExtendedTNodeBuilder} internally.
  *
+ * @remarks
+ *
+ * Along with a built {@link ExtendedTNode}, `tBuild` outputs
+ * an {@link ExtendedTNodeBuilder} for advanced use cases, see examples
+ * for more details.
+ *
  * @example
  *
+ * Typical usage
+ *
  * ```typescript
- * // TODO: add example here
+ * import { tBuild } = 'static-tree';
+ *
+ * const { node } = tBuild({
+ *  key: 'root',
+ *  build: (builder) => builder
+ *    .addData({ some: 'root data' })
+ *    .addChild('leaf')
+ *    .addChild({
+ *      key: 'child',
+ *      build: (builder) => builder.addChild({
+ *        key: 'grandChild',
+ *        build: (builder) => builder.addData({ some: 'grand child data' }),
+ *      }),
+ *    }),
+ * });
+ *
+ * node.$.data().some // -\> 'root data';
+ * node.child.grandChild.$.data().some // -\> 'grand child data';
+ * node.child.grandChild.$.path() // -\> 'root/child/grandChild';
+ * ```
+ *
+ * @example
+ *
+ * Use `tBuild` builder output in nested `ExtendedTNodeBuildCallback`
+ *
+ * ```typescript
+ * const { builder: externalBuilder } = tBuild({
+ *   key: 'external',
+ *   build: (builder) => builder.addChild('child').addData({ some: 'data' }),
+ * });
+ *
+ * const { node } = tBuild({
+ *   key: 'root',
+ *   build: (builder) => builder.addChild(externalBuilder),
+ * });
  * ```
  *
  * @param build - build instruction
  * @param key - key for the {@link ExtendedTNode} to be built
  * @returns
  */
-export function buildStaticTree<
+export function tBuild<
+  Key extends string,
   ChildrenRecord extends Record<string, ExtendedTNode>,
   Data extends TNodeData,
 >(
-  build: (builder: ExtendedTNodeBuilder) => ExtendedTNodeBuilder<ChildrenRecord, Data>,
-  key = 'root',
-): ExtendedTNode<ChildrenRecord, Data> {
-  return build(new ExtendedTNodeBuilder(key)).build();
+  input: ExtendedTNodeBuildInput<Key, ChildrenRecord, Data>,
+): TBuildOutput<Key, ChildrenRecord, Data> {
+  let builder: ExtendedTNodeBuilder<Key, ChildrenRecord, Data>;
+
+  if (typeof input === 'string') {
+    builder = new ExtendedTNodeBuilder(input);
+  } else if (input instanceof ExtendedTNodeBuilder) {
+    builder = input;
+  } else {
+    builder =
+      input.build?.(new ExtendedTNodeBuilder(input.key)) ?? new ExtendedTNodeBuilder(input.key);
+  }
+
+  return {
+    builder,
+    node: builder.build(),
+  };
 }
-// TODO:
-// - rename `buildStaticTree` to just `tBuild`?
-// - change key to first parameter, or parameter as single object with all optional?
-// - allow to return the builder itself and not just the built node?
-// - retry to implement .from(serialized)?
-// - allow build option to be either the full option or just builder object (in which cas extract key from the builder)

@@ -16,7 +16,7 @@ export declare class TNode<Data extends TNodeData = {}>
 
 \#\#\# Constructing TNode
 
-`TNode` is exported in the public api but you should probably avoid constructing `TNode` directly. Instead, use the [buildStaticTree()](./static-tree.buildstatictree.md) helper, as they provide type safety and extension to `TNode` for better developer experience.
+`TNode` is exported in the public api but you should probably avoid constructing `TNode` directly. Instead, use the [tBuild()](./static-tree.tbuild.md) helper, as they provide type safety and extension to `TNode` for better developer experience.
 
 \#\#\# Using TNode
 
@@ -34,12 +34,12 @@ const path = node.$.path({ depth: 2, separator: '.' });
 
 
 ```typescript
-import { TNode, buildStaticTree } from 'static-tree';
+import { TNode } from 'static-tree';
 
 // only do this only if you know exactly what you want
-const root = new TNode('root');
+const parent = new TNode('parent');
 const data = { prop: 'value' }
-const child = new TNode('child', { parent: root, data });
+const child = new TNode('child', { parent, data });
 ```
 
 ## Constructors

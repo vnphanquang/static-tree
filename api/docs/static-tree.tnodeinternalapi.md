@@ -4,7 +4,7 @@
 
 ## TNodeInternalApi interface
 
-The proxy api intended for internal or advanced use
+The proxy api intended for internal or advanced use Refer to [TNode](./static-tree.tnode.md) for documentation of each method.
 
 <b>Signature:</b>
 

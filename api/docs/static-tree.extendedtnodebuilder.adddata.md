@@ -9,7 +9,7 @@ add type-safe data to the [ExtendedTNode](./static-tree.extendedtnode.md) to be 
 <b>Signature:</b>
 
 ```typescript
-addData<D extends TNodeData>(data: D): ExtendedTNodeBuilder<ChildrenRecord, D>;
+addData<D extends TNodeData>(data: D): ExtendedTNodeBuilder<Key, ChildrenRecord, D>;
 ```
 
 ## Parameters
@@ -20,7 +20,24 @@ addData<D extends TNodeData>(data: D): ExtendedTNodeBuilder<ChildrenRecord, D>;
 
 <b>Returns:</b>
 
-[ExtendedTNodeBuilder](./static-tree.extendedtnodebuilder.md)<!-- -->&lt;ChildrenRecord, D&gt;
+[ExtendedTNodeBuilder](./static-tree.extendedtnodebuilder.md)<!-- -->&lt;Key, ChildrenRecord, D&gt;
 
 this [ExtendedTNodeBuilder](./static-tree.extendedtnodebuilder.md)
+
+## Example 1
+
+Using `tBuild`
+
+```typescript
+import { tBuild } from 'static-tree';
+
+const { node } = tBuild({
+  key: 'root',
+  build: (builder) => builder.addData({ some: 'data' }),
+});
+```
+
+## Example 2
+
+Using `ExtendedTNodeBuilder`
 

@@ -22,7 +22,7 @@ import type {
  * ### Constructing TNode
  *
  * `TNode` is exported in the public api but you should probably avoid constructing
- * `TNode` directly. Instead, use the {@link buildStaticTree} helper, as they provide
+ * `TNode` directly. Instead, use the {@link tBuild} helper, as they provide
  * type safety and extension to `TNode` for better developer experience.
  *
  * ### Using TNode
@@ -41,12 +41,12 @@ import type {
  * @example
  *
  * ```typescript
- * import { TNode, buildStaticTree } from 'static-tree';
+ * import { TNode } from 'static-tree';
  *
  * // only do this only if you know exactly what you want
- * const root = new TNode('root');
+ * const parent = new TNode('parent');
  * const data = { prop: 'value' }
- * const child = new TNode('child', { parent: root, data });
+ * const child = new TNode('child', { parent, data });
  * ```
  */
 export class TNode<Data extends TNodeData = {}> {
@@ -99,13 +99,17 @@ export class TNode<Data extends TNodeData = {}> {
    */
   private __setParent(parent?: TNode): TNode<Data> {
     const oldParent = this._parent;
+
     if (oldParent && oldParent.$children().includes(this)) {
       oldParent.__removeChildren(this);
     }
+
     this._parent = parent ?? null;
+
     if (this._parent && !this._parent.$children().includes(this)) {
       this._parent.$children().push(this);
     }
+
     this._depth = (this._parent?.$depth() ?? 0) + 1;
 
     this._pathSegments = [this.$key()];
@@ -114,6 +118,11 @@ export class TNode<Data extends TNodeData = {}> {
       this._pathSegments.unshift(traversedParent.$key());
       traversedParent = traversedParent.$parent();
     }
+
+    for (const child of this.$children()) {
+      child.__setParent(this);
+    }
+
     return this;
   }
 

@@ -17,5 +17,14 @@ export interface TNodeGetPathParams
 |  Property | Modifiers | Type | Description |
 |  --- | --- | --- | --- |
 |  [depth?](./static-tree.tnodegetpathparams.depth.md) |  | number | <p><i>(Optional)</i> - If <code>depth</code> is not provided, path is absolute (from root to node)</p><p>- If <code>depth</code> is a positive number, path is \[node - depth, node\]</p><p>- If <code>depth</code> is a negative number, path is \[root, node - \|depth\|\]</p> |
+|  [reversed?](./static-tree.tnodegetpathparams.reversed.md) |  | boolean | <i>(Optional)</i> Whether to reverse the constructed path. Defaults to <code>false</code> |
 |  [separator?](./static-tree.tnodegetpathparams.separator.md) |  | string | <i>(Optional)</i> Instruction on how to join path segments. Defaults to <code>/</code> |
+|  [till?](./static-tree.tnodegetpathparams.till.md) |  | [TNode](./static-tree.tnode.md) | <p><i>(Optional)</i> If provided, as path is built, it will stop and return at this [TNode](./static-tree.tnode.md)</p>
+```typescript
+// for a branch such as: root -\> child -\> grandChild -\> node
+node.$.path({ till: child }); // -\> 'child/grandChild/node'
+node.$.path({ till: child, depth: 2 }); // -\> 'grandChild/node' (depth is exhausted before child is met)
+node.$.path({ till: grandChild, depth: 3 }); // -\> 'grandChild/node' (grandChild is met before depth is exhausted)
+```
+ |
 

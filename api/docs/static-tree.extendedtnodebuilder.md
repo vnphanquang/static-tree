@@ -9,12 +9,12 @@ Builder for [ExtendedTNode](./static-tree.extendedtnode.md)
 <b>Signature:</b>
 
 ```typescript
-export declare class ExtendedTNodeBuilder<ChildrenRecord extends Record<string, ExtendedTNode> = {}, Data extends TNodeData = {}> 
+export declare class ExtendedTNodeBuilder<Key extends string, ChildrenRecord extends Record<string, ExtendedTNode> = {}, Data extends TNodeData = {}> 
 ```
 
 ## Remarks
 
-This is used internally by [buildStaticTree()](./static-tree.buildstatictree.md)<!-- -->. Alternatively, this can be used if a more method-based, verbose solution is preferred.
+This is used internally by [tBuild()](./static-tree.tbuild.md)<!-- -->. Alternatively, this can be used if a more method-based, verbose solution is preferred.
 
 ## Example 1
 
@@ -24,30 +24,33 @@ import { ExtendedTNodeBuilder } from 'static-tree';
 
 const node = new ExtendedTNodeBuilder('key')
   .addData({ number: 1, boolean: true, string: 'string' })
-  .addChild('childOne', builder => builder.addData({ childData: 'something else' }))
+  .addChild({
+     key: 'childOne',
+     build: (builder) => builder
+       .addData({ childData: 'something else' })
+       .addChildren('grandChild),
+  })
   .addChild('childTwo', builder => builder.addChild('grandChild'))
   .build();
 ```
 
 ## Example 2
 
-For advanced usage, `ExtendedTNodeBuilder` can also be used in place of the `build` callback in `addChild`<!-- -->, should it provide any benefit.
-
-Be careful, however, as key-mismatch might be a problem. Below, a `externalKey` const is to avoid having different key in ExtendedTNodeBuilder &amp; buildStaticTree.
+For advanced usage, `ExtendedTNodeBuilder` can also be used as the input in `addChild`<!-- -->, should it provide any benefit.
 
 ```typescript
-const externalKey = 'external';
+import { tBuild, ExtendedTNodeBuilder } from 'static-tree';
 
-const externalBuilder = new ExtendedTNodeBuilder(externalKey)
+const externalBuilder = new ExtendedTNodeBuilder('external')
  .addData({ some: 'some' })
  .addChild('someChild');
 
-const tree = buildStaticTree(
-  (builder) => builder.addChild(externalKey, () => externalBuilder),
-  'root',
-);
+const { node } = tBuild({
+  key: 'root',
+  build: (builder) => builder.addChild(externalBuilder),
+});
 
-tree.external.someChild.$.path(); // -\> `root/external/someChild`
+node.external.someChild.$.path(); // -\> `root/external/someChild`
 ```
 
 ## Constructors
@@ -60,7 +63,7 @@ tree.external.someChild.$.path(); // -\> `root/external/someChild`
 
 |  Method | Modifiers | Description |
 |  --- | --- | --- |
-|  [addChild(key, build)](./static-tree.extendedtnodebuilder.addchild.md) |  | add a type-safe child to the [ExtendedTNode](./static-tree.extendedtnode.md) to be built |
+|  [addChild(input)](./static-tree.extendedtnodebuilder.addchild.md) |  | add a type-safe child to the [ExtendedTNode](./static-tree.extendedtnode.md) to be built |
 |  [addData(data)](./static-tree.extendedtnodebuilder.adddata.md) |  | add type-safe data to the [ExtendedTNode](./static-tree.extendedtnode.md) to be built |
 |  [build()](./static-tree.extendedtnodebuilder.build.md) |  | Build the [ExtendedTNode](./static-tree.extendedtnode.md) |
 

@@ -4,7 +4,7 @@
 
 ## TNodePublicApi interface
 
-The proxy api intended for public use
+The proxy api intended for public use. Refer to [TNode](./static-tree.tnode.md) for documentation of each method.
 
 <b>Signature:</b>
 
