@@ -64,6 +64,17 @@ export interface TNodeGetPathParams {
    * ```
    */
   reversed?: boolean;
+  /**
+   * If provided, as path is built, it will stop and return at this {@link TNode}
+   *
+   * ```typescript
+   * // for a branch such as: root -\> child -\> grandChild -\> node
+   * node.$.path({ till: child }); // -\> 'child/grandChild/node'
+   * node.$.path({ till: child, depth: 2 }); // -\> 'grandChild/node' (depth is exhausted before child is met)
+   * node.$.path({ till: grandChild, depth: 3 }); // -\> 'grandChild/node' (grandChild is met before depth is exhausted)
+   * ```
+   */
+  till?: TNode;
 }
 
 /**

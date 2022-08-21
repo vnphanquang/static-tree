@@ -82,6 +82,15 @@ describe.concurrent('TNode | $.path', () => {
   test('with reversed option', () => {
     expect(grandChild.$.path({ reversed: true })).toBe('grandChild/child/root');
   });
+
+  test('with till option', () => {
+    const node = new TNode('node', { parent: grandChild });
+    expect(node.$.path({ till: child })).toBe('child/grandChild/node');
+    expect(node.$.path({ till: child, depth: 2 })).toBe('grandChild/node');
+    expect(node.$.path({ till: grandChild, depth: 3 })).toBe('grandChild/node');
+    expect(node.$.path({ till: child, depth: -2 })).toBe('root/child');
+    expect(node.$.path({ till: grandChild, depth: -3 })).toBe('root/child');
+  });
 });
 
 describe.concurrent('TNode | $.root', () => {

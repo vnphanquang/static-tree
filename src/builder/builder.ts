@@ -144,5 +144,4 @@ export function buildStaticTree<
 // - change key to first parameter, or parameter as single object with all optional?
 // - allow to return the builder itself and not just the built node?
 // - retry to implement .from(serialized)?
-// - implement TNode path method options: till: TNode
 // - allow build option to be either the full option or just builder object (in which cas extract key from the builder)

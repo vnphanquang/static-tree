@@ -191,16 +191,31 @@ export class TNode<Data extends TNodeData = {}> {
    * @returns path
    */
   private $path(params: TNodeGetPathParams = {}): string {
-    const { depth = this._pathSegments.length, separator = '/', reversed = false } = params;
+    const { depth = this._pathSegments.length, separator = '/', reversed = false, till } = params;
     const len = this._pathSegments.length;
-    let start = len - Math.min(depth, len);
+
+    let count = Math.abs(depth);
+    let node: TNode = this as TNode;
+    let anchor = len;
+    while (count > 0 && node) {
+      count--;
+      anchor--;
+      if (node == till) {
+        break;
+      }
+      node = node.$parent();
+    }
+
+    let start = anchor;
     let end = len;
     if (depth < 0) {
       start = 0;
-      end = len + Math.max(depth, -len);
+      end = till ? len - anchor : depth;
     }
+
     let segments = this._pathSegments.slice(start, end);
     if (reversed) segments = segments.reverse();
+
     return segments.join(separator);
   }
 
