@@ -7,8 +7,8 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "build": "rollup -c",
-    "lint": "eslint **/*.{ts,js,cjs}",
-    "format": "prettier --check \"./**/*.{ts,js,cjs,json}\"",
+    "lint": "eslint **/*.{ts,js}",
+    "format": "prettier --check \"./**/*.{ts,js,json}\"",
     "test": "vitest --ui --coverage",
     "ci:test": "vitest run --coverage",
     "ci:version": "changeset version",

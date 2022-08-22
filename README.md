@@ -25,7 +25,29 @@ yarn add static-tree
 pnpm add static-tree
 ```
 
-## Usage
+## Quick Start
+
+## What For
+
+This section lays out the problem this package is trying to show.
+
+## Contributing
+
+[Read Contribution Guide][github.contributing]
+
+<p align="center">
+  <a href="https://www.buymeacoffee.com/vnphanquang" target="_blank">
+    <img
+      src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
+      height="60"
+      width="217"
+      alt="buy vnphanquang a coffee"
+    />
+  </a>
+</p>
+
+<!-- github specifics -->
+[github.contributing]: ./CONTRIBUTING.md
 
 <!-- heading badge -->
 [npm.badge]: https://img.shields.io/npm/v/static-tree
