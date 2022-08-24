@@ -1,67 +1,30 @@
 {
   "name": "static-tree",
-  "version": "1.1.0",
-  "description": "Zero dependency builder for strongly typed static tree",
-  "main": "lib/index.js",
-  "module": "lib/index.esm.js",
-  "types": "lib/index.d.ts",
+  "version": "0.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "build": "rollup -c",
-    "lint": "eslint **/*.{ts,js}",
-    "format": "prettier --check \"./**/*.{ts,js,json}\"",
-    "test": "vitest --ui --coverage",
-    "ci:test": "vitest run --coverage",
+    "turbo": "turbo",
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "lint": "turbo run lint --parallel",
+    "format": "turbo run format --parallel",
+    "api": "turbo run api",
     "ci:version": "changeset version",
     "ci:publish": "pnpm build && changeset publish",
-    "api:extract": "api-extractor run --local --verbose",
-    "api:document": "api-documenter markdown -i api/temp -o api/docs",
-    "api": "run-s api:extract api:document"
+    "ci:test": "turbo run ci:test"
   },
-  "keywords": [
-    "typescript",
-    "typed",
-    "map",
-    "tree",
-    "static",
-    "builder",
-    "structure"
-  ],
-  "files": [
-    "lib"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/vnphanquang/static-tree.git"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "bugs": {
-    "url": "https://github.com/vnphanquang/static-tree/issues"
-  },
-  "homepage": "https://github.com/vnphanquang/static-tree",
-  "author": "Quang Phan",
-  "license": "MIT",
   "devDependencies": {
     "@changesets/changelog-github": "^0.4.6",
     "@changesets/cli": "^2.24.3",
-    "@microsoft/api-documenter": "^7.19.5",
-    "@microsoft/api-extractor": "^7.29.3",
-    "@rollup/plugin-commonjs": "^22.0.2",
-    "@rollup/plugin-node-resolve": "^13.3.0",
-    "@types/node": "^18.7.3",
-    "@vitest/coverage-istanbul": "^0.22.1",
-    "@vitest/ui": "^0.22.0",
-    "@vnphanquang/eslint-config": "^1.1.0",
-    "eslint": "^8.22.0",
-    "npm-run-all": "^4.1.5",
-    "prettier": "^2.7.1",
-    "rollup": "^2.78.1",
-    "rollup-plugin-filesize": "^9.1.2",
-    "rollup-plugin-typescript2": "^0.32.1",
-    "ts-node": "^10.9.1",
-    "typescript": "^4.7.4",
-    "vite": "^3.0.8",
-    "vitest": "^0.22.0"
-  }
+    "prettier": "latest",
+    "turbo": "latest"
+  },
+  "engines": {
+    "pnpm": ">=7.5.0",
+    "node": ">=16.14.2"
+  },
+  "packageManager": "pnpm@7.6.0"
 }

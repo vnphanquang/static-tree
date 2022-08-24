@@ -6,9 +6,9 @@ on:
     branches:
       - main
     paths:
-      - "src/**"
+      - "packages/static-tree/src/**"
+      - "packages/static-tree/vite.config.ts"
       - ".github/workflows/codecov.yaml"
-      - "vite.config.ts"
 
 jobs:
   Codecov:
@@ -34,11 +34,12 @@ jobs:
       - name: Test
         run: pnpm ci:test
         continue-on-error: false
-      - name: Update code coverage to Codecov
+      - name: Update static-tree code coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./coverage
-          flags: unittests
+          directory: ./packages/static-tree/coverage
+          flags: static-tree,unittests
           verbose: true
           fail_ci_if_error: true
+          name: static-tree-unit-tests
