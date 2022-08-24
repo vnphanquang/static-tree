@@ -2,7 +2,7 @@
 
 # `static-tree`
 
-[![MIT][license.badge]][license] [![github.actions.changeset.badge]][github.actions.changeset] [![npm.badge]][npm] [![bundlephobia.badge]][bundlephobia] [![codecov.badge]][codecov]
+[![MIT][license.badge]][license] [![github.actions.changeset.badge]][github.actions.changeset] [![bundlephobia.badge]][bundlephobia] [![codecov.badge]][codecov]
 
 </div>
 
@@ -46,8 +46,6 @@ This monorepo includes several packages that have self-managed release lifecycle
 [npm.static-tree]: https://www.npmjs.com/package/static-tree
 
 <!-- heading badge -->
-[npm.badge]: https://img.shields.io/npm/v/static-tree
-[npm]: https://www.npmjs.com/package/static-tree
 [bundlephobia.badge]: https://img.shields.io/bundlephobia/minzip/static-tree?label=minzipped
 [bundlephobia]: https://bundlephobia.com/package/static-tree
 [license.badge]: https://img.shields.io/badge/license-MIT-blue.svg
