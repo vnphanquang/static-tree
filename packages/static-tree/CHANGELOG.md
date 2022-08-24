@@ -1,5 +1,11 @@
 # static-tree
 
+## 1.0.1
+
+### Patch Changes
+
+- [`d1b5241`](https://github.com/vnphanquang/static-tree/commit/d1b5241758ccd57c96d76187f2bdbaad286fc8b4) Thanks [@vnphanquang](https://github.com/vnphanquang)! - change homepage link for static-tree package
+
 ## 1.1.0
 
 ### Minor Changes
