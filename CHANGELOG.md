@@ -1,5 +1,23 @@
 # static-tree
 
+## 1.1.0
+
+### Minor Changes
+
+- [`a6b1fb5`](https://github.com/vnphanquang/static-tree/commit/a6b1fb51aca76080fe61927b40e6459e6e91a87d) Thanks [@vnphanquang](https://github.com/vnphanquang)! - rename builder helper to `tBuild` and allow multiple input types
+
+### Patch Changes
+
+- [`2dba2cf`](https://github.com/vnphanquang/static-tree/commit/2dba2cfa64debf358ee287415bf637c10ee572b5) Thanks [@vnphanquang](https://github.com/vnphanquang)! - add README docs
+
+* [`1387577`](https://github.com/vnphanquang/static-tree/commit/1387577cf9b575860418bf49f244c71dd029b22f) Thanks [@vnphanquang](https://github.com/vnphanquang)! - (TNode): add option to reverse built path
+
+- [`dc1210f`](https://github.com/vnphanquang/static-tree/commit/dc1210fa3719e1869ad383b54db055edbd6a3421) Thanks [@vnphanquang](https://github.com/vnphanquang)! - add `pathResolver` option to `TNodeInit`
+
+* [`3c7321e`](https://github.com/vnphanquang/static-tree/commit/3c7321e9e6fec2fc183a8609b1a014889669bece) Thanks [@vnphanquang](https://github.com/vnphanquang)! - docs: bootstrap tsdoc and api extractor scripts
+
+- [`a8a9169`](https://github.com/vnphanquang/static-tree/commit/a8a9169a7e0c5a60226343e0307961a231e93834) Thanks [@vnphanquang](https://github.com/vnphanquang)! - enable `till` option in TNode get path method
+
 ## 1.0.0
 
 ### Major Changes
