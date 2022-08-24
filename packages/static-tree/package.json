@@ -37,7 +37,7 @@
   "bugs": {
     "url": "https://github.com/vnphanquang/static-tree/issues"
   },
-  "homepage": "https://github.com/vnphanquang/static-tree",
+  "homepage": "https://github.com/vnphanquang/static-tree/tree/main/packages/static-tree",
   "author": "Quang Phan",
   "license": "MIT",
   "devDependencies": {
