@@ -91,6 +91,11 @@ describe.concurrent('TNode | $.path', () => {
     expect(node.$.path({ till: child, depth: -2 })).toBe('root/child');
     expect(node.$.path({ till: grandChild, depth: -3 })).toBe('root/child');
   });
+
+  test('with custom path resolver', () => {
+    const node = new TNode('key', { parent: grandChild, pathResolver: () => 'customKeyForPath' });
+    expect(node.$.path()).toBe('root/child/grandChild/customKeyForPath');
+  });
 });
 
 describe.concurrent('TNode | $.root', () => {

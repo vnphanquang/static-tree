@@ -12,7 +12,7 @@ export type ExtendedTNodeBuildCallback<Key extends string, ChildrenRecord extend
 
 // @public
 export class ExtendedTNodeBuilder<Key extends string, ChildrenRecord extends Record<string, ExtendedTNode> = {}, Data extends TNodeData = {}> {
-    constructor(key: Key, parent?: TNode);
+    constructor(key: Key, options?: Omit<TNodeInit<Data>, 'data'>);
     addChild<ChildKey extends string, GrandChildrenRecord extends Record<string, ExtendedTNode>, ChildData extends TNodeData = {}>(input: ExtendedTNodeBuildInput<ChildKey, GrandChildrenRecord, ChildData>): ExtendedTNodeBuilder<Key, ChildrenRecord & Record<ChildKey, ExtendedTNode<GrandChildrenRecord, ChildData>>, Data>;
     addData<D extends TNodeData>(data: D): ExtendedTNodeBuilder<Key, ChildrenRecord, D>;
     build(): ExtendedTNode<ChildrenRecord, Data>;
@@ -21,6 +21,7 @@ export class ExtendedTNodeBuilder<Key extends string, ChildrenRecord extends Rec
 // @public
 export type ExtendedTNodeBuildInput<Key extends string, ChildrenRecord extends Record<string, ExtendedTNode>, Data extends TNodeData = {}> = Key | ExtendedTNodeBuilder<Key, ChildrenRecord, Data> | {
     key: Key;
+    pathResolver?: TNodeInit<Data>['pathResolver'];
     build?: ExtendedTNodeBuildCallback<Key, ChildrenRecord, Data>;
 };
 
@@ -48,8 +49,29 @@ export class TNode<Data extends TNodeData = {}> {
     // (undocumented)
     get $(): TNodePublicApi<Data>;
     // (undocumented)
+    protected $children(): TNode[];
+    // (undocumented)
+    protected $data(): Data;
+    // (undocumented)
+    protected $depth(): number;
+    // (undocumented)
+    protected $isRoot(): boolean;
+    // (undocumented)
+    protected $key(): string;
+    // (undocumented)
+    protected $parent(): TNode | null;
+    protected $path(params?: TNodeGetPathParams): string;
+    // (undocumented)
+    protected $root(): TNode;
+    // (undocumented)
+    protected $serialize<M extends boolean>(options?: TNodeSerializeOptions<M, Data>): M extends true ? VerboseSerializedTNode : MinimalSerializedTNode;
+    // (undocumented)
     get __(): TNodeInternalApi<Data>;
+    protected __addChildren(...nodes: TNode[]): TNode<Data>;
     constructor(key: string, options?: TNodeInit<Data>);
+    protected __removeChildren(...nodes: TNode[]): TNode<Data>;
+    protected __setData<NewData extends TNodeData>(data: NewData): TNode<NewData>;
+    protected __setParent(parent?: TNode): TNode<Data>;
     static from(serialized: SerializedTNode, parent?: TNode): TNode<any>;
 }
 
@@ -68,6 +90,7 @@ export interface TNodeGetPathParams {
 export interface TNodeInit<D extends Record<string, any> = {}> {
     data?: D;
     parent?: TNode;
+    pathResolver?: (node: TNode) => string;
 }
 
 // @public

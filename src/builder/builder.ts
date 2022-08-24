@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { TNode } from '../node';
-import type { TNodeData } from '../node';
+import type { TNodeData, TNodeInit } from '../node';
 
 import type { ExtendedTNode, ExtendedTNodeBuildInput, TBuildOutput } from './builder.types';
 
@@ -64,8 +64,8 @@ export class ExtendedTNodeBuilder<
    * @param key - key for the {@link ExtendedTNode} to be built
    * @param parent - parent {@link TNode} to attach to
    */
-  constructor(key: Key, parent?: TNode) {
-    this._node = new TNode(key, { parent });
+  constructor(key: Key, options: Omit<TNodeInit<Data>, 'data'> = {}) {
+    this._node = new TNode(key, options);
     this._key = key;
   }
 
@@ -138,7 +138,7 @@ export class ExtendedTNodeBuilder<
 
     if (typeof input === 'string') {
       key = input;
-      node = new ExtendedTNodeBuilder(key, this._node).build();
+      node = new ExtendedTNodeBuilder(key, { parent: this._node }).build();
     } else if (input instanceof ExtendedTNodeBuilder) {
       key = input._key;
       node = input.build();
@@ -146,8 +146,14 @@ export class ExtendedTNodeBuilder<
     } else {
       key = input.key;
       node =
-        input.build?.(new ExtendedTNodeBuilder(key, this._node)).build() ??
-        new TNode(key, { parent: this._node });
+        input
+          .build?.(
+            new ExtendedTNodeBuilder(key, {
+              parent: this._node,
+              pathResolver: input.pathResolver,
+            }),
+          )
+          .build() ?? new TNode(key, { parent: this._node });
     }
 
     (this._node as any)[key] = node;
@@ -269,7 +275,11 @@ export function tBuild<
     builder = input;
   } else {
     builder =
-      input.build?.(new ExtendedTNodeBuilder(input.key)) ?? new ExtendedTNodeBuilder(input.key);
+      input.build?.(
+        new ExtendedTNodeBuilder(input.key, {
+          pathResolver: input.pathResolver,
+        }),
+      ) ?? new ExtendedTNodeBuilder(input.key);
   }
 
   return {

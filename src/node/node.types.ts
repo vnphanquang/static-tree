@@ -16,6 +16,26 @@ export interface TNodeInit<D extends Record<string, any> = {}> {
    * Inner data to keep in the constructed node
    */
   data?: D;
+  /**
+   * Custom resolver during for this node during path construction
+   *
+   * @example
+   *
+   * ```typescript
+   * import { tBuild } from 'static-tree';
+   * const { node: api } = tBuild({
+   *   key: 'api',
+   *   pathResolver: () => 'https://api.domain.example',
+   *   builder: (builder) => builder.addChild('healthcheck'),
+   * });
+   *
+   * api.healthcheck.$.path(); // -\> 'https://api.domain.example/healthcheck'
+   * ```
+   *
+   * @param node - {@link TNode}
+   * @returns string
+   */
+  pathResolver?: (node: TNode) => string;
 }
 
 /**
@@ -175,7 +195,8 @@ export type SerializedTNode = VerboseSerializedTNode | MinimalSerializedTNode;
 /**
  * @public
  *
- * Inner data of node
+ * Inner data of node. See {@link tBuild} for idiomatic examples on adding data to node.
+ * See {@link TNode} for more information on how this data is stored.
  */
 export type TNodeData = Record<string, any>;
 

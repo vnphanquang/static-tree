@@ -27,6 +27,7 @@ export const TNODE_MOCK_DATA = {
 
 const { node: sTree } = tBuild({
   key: 'key',
+  pathResolver: () => 'customPathSegment',
   build: (builder) =>
     builder.addData(TNODE_MOCK_DATA).addChild({
       key: 'child',
@@ -60,23 +61,56 @@ describe('tBuild', () => {
 
   test('children should be typed and match', () => {
     expect(sTree.$.key()).toBe('key');
-    expect(sTree.child.$.path()).toBe('key/child');
-    expect(sTree.child.justKey.$.path()).toBe('key/child/justKey');
-    expect(sTree.child.inputJustKey.$.path()).toBe('key/child/inputJustKey');
-    expect(sTree.child.external.$.path()).toBe('key/child/external');
-    expect(sTree.child.tBuild.$.path()).toBe('key/child/tBuild');
+    expect(sTree.child.$.path()).toBe('customPathSegment/child');
+    expect(sTree.child.justKey.$.path()).toBe('customPathSegment/child/justKey');
+    expect(sTree.child.inputJustKey.$.path()).toBe('customPathSegment/child/inputJustKey');
+    expect(sTree.child.external.$.path()).toBe('customPathSegment/child/external');
+    expect(sTree.child.tBuild.$.path()).toBe('customPathSegment/child/tBuild');
     expect(sTree.child.tBuild.tBuildInputJustKey.$.path()).toBe(
-      'key/child/tBuild/tBuildInputJustKey',
+      'customPathSegment/child/tBuild/tBuildInputJustKey',
     );
-    expect(sTree.child.tBuild.tBuildJustKey.$.path()).toBe('key/child/tBuild/tBuildJustKey');
+    expect(sTree.child.tBuild.tBuildJustKey.$.path()).toBe(
+      'customPathSegment/child/tBuild/tBuildJustKey',
+    );
     expect(sTree.child.tBuild.tBuildWithBuilder.$.path()).toBe(
-      'key/child/tBuild/tBuildWithBuilder',
+      'customPathSegment/child/tBuild/tBuildWithBuilder',
     );
-    expect(sTree.child.tBuild.tBuildFull.$.path()).toBe('key/child/tBuild/tBuildFull');
-    expect(sTree.child.tBuild.tBuildFull.final.$.path()).toBe('key/child/tBuild/tBuildFull/final');
+    expect(sTree.child.tBuild.tBuildFull.$.path()).toBe(
+      'customPathSegment/child/tBuild/tBuildFull',
+    );
+    expect(sTree.child.tBuild.tBuildFull.final.$.path()).toBe(
+      'customPathSegment/child/tBuild/tBuildFull/final',
+    );
   });
 
   test('serialization should match', () => {
     expect(sTree.$.serialize({ verbose: true })).toMatchSnapshot();
+  });
+});
+
+describe('real life example test', () => {
+  const { node: api } = tBuild({
+    key: 'api',
+    pathResolver: () => 'https://api.domain.example',
+    build: (builder) =>
+      builder.addChild({
+        key: 'auth',
+        build: (builder) =>
+          builder.addChild('logout').addChild({
+            key: 'oauth',
+            build: (builder) => builder.addChild('google').addChild('discord'),
+            //...
+          }),
+      }),
+  });
+
+  test('full path should match', () => {
+    expect(api.auth.oauth.google.$.path(), 'https://api.domain.example/auth/oauth/google');
+  });
+  test('path with positive depth should match', () => {
+    expect(api.auth.oauth.google.$.path({ depth: 2 }), 'oauth/google');
+  });
+  test('path with negative depth should match', () => {
+    expect(api.auth.oauth.google.$.path({ depth: -2 }), 'https://api.domain.example/auth');
   });
 });

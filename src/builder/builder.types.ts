@@ -1,13 +1,29 @@
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { TNode, TNodeData } from '../node';
+import type { TNode, TNodeData, TNodeInit } from '../node';
 
 import { ExtendedTNodeBuilder } from './builder';
 
 /**
  * @public
  *
- * {@link TNode} extended with children as properties
+ * {@link TNode} extended with children inline as properties, intended to provide
+ * idiomatic dot notation parent-to-child node access, so that you can do:
+ *
+ * ```typescript
+ * root.child.grandChild.$.path(); // -\> `root/child/grandChild`
+ * ```
+ *
+ * instead of:
+ *
+ * ```typescript
+ * root.$.children().find(c => c.key === 'child')?.$.children().find(c => c.key === 'grandChild')?.$.path();
+ * ```
+ *
+ * @remarks
+ *
+ * {@link ExtendedTNode} is constructed behind the scene using {@link tBuild} (preferred)
+ * and {@link ExtendedTNodeBuilder}.
  */
 export type ExtendedTNode<
   ChildrenRecord extends Record<string, ExtendedTNode> = {},
@@ -40,6 +56,7 @@ export type ExtendedTNodeBuildInput<
        * key for {@link ExtendedTNode} to be built
        */
       key: Key;
+      pathResolver?: TNodeInit<Data>['pathResolver'];
       build?: ExtendedTNodeBuildCallback<Key, ChildrenRecord, Data>;
     };
 

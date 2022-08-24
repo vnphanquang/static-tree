@@ -9,7 +9,7 @@ Constructs a new instance of the `ExtendedTNodeBuilder` class
 <b>Signature:</b>
 
 ```typescript
-constructor(key: Key, parent?: TNode);
+constructor(key: Key, options?: Omit<TNodeInit<Data>, 'data'>);
 ```
 
 ## Parameters
@@ -17,5 +17,5 @@ constructor(key: Key, parent?: TNode);
 |  Parameter | Type | Description |
 |  --- | --- | --- |
 |  key | Key | key for the [ExtendedTNode](./static-tree.extendedtnode.md) to be built |
-|  parent | [TNode](./static-tree.tnode.md) | <i>(Optional)</i> parent [TNode](./static-tree.tnode.md) to attach to |
+|  options | Omit&lt;[TNodeInit](./static-tree.tnodeinit.md)<!-- -->&lt;Data&gt;, 'data'&gt; | <i>(Optional)</i> |
 

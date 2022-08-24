@@ -4,7 +4,16 @@
 
 ## ExtendedTNode type
 
-[TNode](./static-tree.tnode.md) extended with children as properties
+[TNode](./static-tree.tnode.md) extended with children inline as properties, intended to provide idiomatic dot notation parent-to-child node access, so that you can do:
+
+```typescript
+root.child.grandChild.$.path(); // -\> `root/child/grandChild`
+```
+instead of:
+
+```typescript
+root.$.children().find(c => c.key === 'child')?.$.children().find(c => c.key === 'grandChild')?.$.path();
+```
 
 <b>Signature:</b>
 
@@ -12,4 +21,8 @@
 export declare type ExtendedTNode<ChildrenRecord extends Record<string, ExtendedTNode> = {}, Data extends TNodeData = {}> = TNode<Data> & ChildrenRecord;
 ```
 <b>References:</b> [ExtendedTNode](./static-tree.extendedtnode.md)<!-- -->, [TNodeData](./static-tree.tnodedata.md)<!-- -->, [TNode](./static-tree.tnode.md)
+
+## Remarks
+
+[ExtendedTNode](./static-tree.extendedtnode.md) is constructed behind the scene using [tBuild()](./static-tree.tbuild.md) (preferred) and [ExtendedTNodeBuilder](./static-tree.extendedtnodebuilder.md)<!-- -->.
 

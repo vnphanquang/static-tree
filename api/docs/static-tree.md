@@ -36,9 +36,17 @@ Type-safe static tree builder
 
 |  Type Alias | Description |
 |  --- | --- |
-|  [ExtendedTNode](./static-tree.extendedtnode.md) | [TNode](./static-tree.tnode.md) extended with children as properties |
+|  [ExtendedTNode](./static-tree.extendedtnode.md) | <p>[TNode](./static-tree.tnode.md) extended with children inline as properties, intended to provide idiomatic dot notation parent-to-child node access, so that you can do:</p>
+```typescript
+root.child.grandChild.$.path(); // -\> `root/child/grandChild`
+```
+<p>instead of:</p>
+```typescript
+root.$.children().find(c => c.key === 'child')?.$.children().find(c => c.key === 'grandChild')?.$.path();
+```
+ |
 |  [ExtendedTNodeBuildCallback](./static-tree.extendedtnodebuildcallback.md) | Build callback for adding data &amp; nested children |
 |  [ExtendedTNodeBuildInput](./static-tree.extendedtnodebuildinput.md) | <p>Instruction for building nested [ExtendedTNode](./static-tree.extendedtnode.md)<!-- -->.</p><p>Can be one of the following:</p><p>- a string as the key of the node to be built</p><p>- an [ExtendedTNodeBuilder](./static-tree.extendedtnodebuilder.md) object</p><p>- an object with <code>key</code> &amp; an optional [ExtendedTNodeBuildCallback](./static-tree.extendedtnodebuildcallback.md)</p> |
 |  [SerializedTNode](./static-tree.serializedtnode.md) | Possible types of serialized node, depending on how [TNodeSerializeOptions](./static-tree.tnodeserializeoptions.md) is setup |
-|  [TNodeData](./static-tree.tnodedata.md) | Inner data of node |
+|  [TNodeData](./static-tree.tnodedata.md) | Inner data of node. See [tBuild()](./static-tree.tbuild.md) for idiomatic examples on adding data to node. See [TNode](./static-tree.tnode.md) for more information on how this data is stored. |
 

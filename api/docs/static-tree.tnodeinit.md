@@ -18,4 +18,5 @@ export interface TNodeInit<D extends Record<string, any> = {}>
 |  --- | --- | --- | --- |
 |  [data?](./static-tree.tnodeinit.data.md) |  | D | <i>(Optional)</i> Inner data to keep in the constructed node |
 |  [parent?](./static-tree.tnodeinit.parent.md) |  | [TNode](./static-tree.tnode.md) | <i>(Optional)</i> Initial TNode parent for the constructed node. Defaults to <code>null</code> |
+|  [pathResolver?](./static-tree.tnodeinit.pathresolver.md) |  | (node: [TNode](./static-tree.tnode.md)<!-- -->) =&gt; string | <i>(Optional)</i> Custom resolver during for this node during path construction |
 

@@ -57,7 +57,7 @@ node.external.someChild.$.path(); // -\> `root/external/someChild`
 
 |  Constructor | Modifiers | Description |
 |  --- | --- | --- |
-|  [(constructor)(key, parent)](./static-tree.extendedtnodebuilder._constructor_.md) |  | Constructs a new instance of the <code>ExtendedTNodeBuilder</code> class |
+|  [(constructor)(key, options)](./static-tree.extendedtnodebuilder._constructor_.md) |  | Constructs a new instance of the <code>ExtendedTNodeBuilder</code> class |
 
 ## Methods
 

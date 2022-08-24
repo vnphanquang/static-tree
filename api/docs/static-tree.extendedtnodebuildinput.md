@@ -19,8 +19,9 @@ Can be one of the following:
 ```typescript
 export declare type ExtendedTNodeBuildInput<Key extends string, ChildrenRecord extends Record<string, ExtendedTNode>, Data extends TNodeData = {}> = Key | ExtendedTNodeBuilder<Key, ChildrenRecord, Data> | {
     key: Key;
+    pathResolver?: TNodeInit<Data>['pathResolver'];
     build?: ExtendedTNodeBuildCallback<Key, ChildrenRecord, Data>;
 };
 ```
-<b>References:</b> [ExtendedTNode](./static-tree.extendedtnode.md)<!-- -->, [TNodeData](./static-tree.tnodedata.md)<!-- -->, [ExtendedTNodeBuilder](./static-tree.extendedtnodebuilder.md)<!-- -->, [ExtendedTNodeBuildCallback](./static-tree.extendedtnodebuildcallback.md)
+<b>References:</b> [ExtendedTNode](./static-tree.extendedtnode.md)<!-- -->, [TNodeData](./static-tree.tnodedata.md)<!-- -->, [ExtendedTNodeBuilder](./static-tree.extendedtnodebuilder.md)<!-- -->, [TNodeInit](./static-tree.tnodeinit.md)<!-- -->, [ExtendedTNodeBuildCallback](./static-tree.extendedtnodebuildcallback.md)
 

@@ -14,11 +14,11 @@ export declare class TNode<Data extends TNodeData = {}>
 
 ## Remarks
 
-\#\#\# Constructing TNode
+<h3>Constructing TNode</h3>
 
 `TNode` is exported in the public api but you should probably avoid constructing `TNode` directly. Instead, use the [tBuild()](./static-tree.tbuild.md) helper, as they provide type safety and extension to `TNode` for better developer experience.
 
-\#\#\# Using TNode
+<h3>Using TNode</h3>
 
 By design, `TNode` exposes two proxy method collections through two getters:
 
@@ -59,5 +59,18 @@ const child = new TNode('child', { parent, data });
 
 |  Method | Modifiers | Description |
 |  --- | --- | --- |
+|  [\_\_addChildren(nodes)](./static-tree.tnode.__addchildren.md) | <code>protected</code> | Add children to record &amp; set their parent to current node |
+|  [\_\_removeChildren(nodes)](./static-tree.tnode.__removechildren.md) | <code>protected</code> | Remove specified children from this node, and set their parent to null |
+|  [\_\_setData(data)](./static-tree.tnode.__setdata.md) | <code>protected</code> | Set internal data for this node |
+|  [\_\_setParent(parent)](./static-tree.tnode.__setparent.md) | <code>protected</code> | <p>Change parent of current node and handle side effects, including:</p><p>- remove current node from parent's children (if parent exists)</p><p>- recompute path segments &amp; depth</p> |
+|  [$children()](./static-tree.tnode._children.md) | <code>protected</code> |  |
+|  [$data()](./static-tree.tnode._data.md) | <code>protected</code> |  |
+|  [$depth()](./static-tree.tnode._depth.md) | <code>protected</code> |  |
+|  [$isRoot()](./static-tree.tnode._isroot.md) | <code>protected</code> |  |
+|  [$key()](./static-tree.tnode._key.md) | <code>protected</code> |  |
+|  [$parent()](./static-tree.tnode._parent.md) | <code>protected</code> |  |
+|  [$path(params)](./static-tree.tnode._path.md) | <code>protected</code> | Construct the paths for this node |
+|  [$root()](./static-tree.tnode._root.md) | <code>protected</code> |  |
+|  [$serialize(options)](./static-tree.tnode._serialize.md) | <code>protected</code> |  |
 |  [from(serialized, parent)](./static-tree.tnode.from.md) | <code>static</code> | Construct a TNode and all its children from a serialized object (most likely from the <code>TNode.$.serialize</code> method) |
 

@@ -19,13 +19,13 @@ import type {
  *
  * @remarks
  *
- * ### Constructing TNode
+ * <h3>Constructing TNode</h3>
  *
  * `TNode` is exported in the public api but you should probably avoid constructing
  * `TNode` directly. Instead, use the {@link tBuild} helper, as they provide
  * type safety and extension to `TNode` for better developer experience.
  *
- * ### Using TNode
+ * <h3>Using TNode</h3>
  *
  * By design, `TNode` exposes two proxy method collections through two getters:
  *
@@ -56,16 +56,19 @@ export class TNode<Data extends TNodeData = {}> {
   private _pathSegments: string[];
   private _children: TNode[];
   private _data: Data;
+  private _pathResolver: TNodeInit<Data>['pathResolver'];
 
   /**
    * @param key - key of this node
    * @param options - the {@link TNodeInit} instruction
    */
   constructor(key: string, options: TNodeInit<Data> = {}) {
-    const { parent, data } = options;
+    const { parent, data, pathResolver } = options;
     this._children = [];
     this._key = key;
     this._data = data ?? ({} as any);
+    this._pathResolver = pathResolver ?? (() => this._key);
+
     this.__setParent(parent);
   }
 
@@ -97,7 +100,7 @@ export class TNode<Data extends TNodeData = {}> {
    * @param parent - a {@link TNode} to attach to
    * @returns this {@link TNode}
    */
-  private __setParent(parent?: TNode): TNode<Data> {
+  protected __setParent(parent?: TNode): TNode<Data> {
     const oldParent = this._parent;
 
     if (oldParent && oldParent.$children().includes(this)) {
@@ -112,10 +115,11 @@ export class TNode<Data extends TNodeData = {}> {
 
     this._depth = (this._parent?.$depth() ?? 0) + 1;
 
-    this._pathSegments = [this.$key()];
-    let traversedParent = this._parent;
+    this._pathSegments = [];
+    let traversedParent: TNode = this as TNode;
     while (traversedParent) {
-      this._pathSegments.unshift(traversedParent.$key());
+      const segment = traversedParent._pathResolver(traversedParent);
+      this._pathSegments.unshift(segment);
       traversedParent = traversedParent.$parent();
     }
 
@@ -132,7 +136,7 @@ export class TNode<Data extends TNodeData = {}> {
    * @param nodes - {@link TNode}[] list of nodes to add
    * @returns this {@link TNode}
    */
-  private __addChildren(...nodes: TNode[]): TNode<Data> {
+  protected __addChildren(...nodes: TNode[]): TNode<Data> {
     this.$children().push(...nodes);
     for (const node of nodes) {
       node.__setParent(this);
@@ -146,7 +150,7 @@ export class TNode<Data extends TNodeData = {}> {
    * @param nodes - {@link TNode}[] list of nodes to remove
    * @returns this {@link TNode}
    */
-  private __removeChildren(...nodes: TNode[]): TNode<Data> {
+  protected __removeChildren(...nodes: TNode[]): TNode<Data> {
     this._children = this._children.filter((n) => nodes.every((r) => r != n));
     for (const node of nodes) {
       node.__setParent(null);
@@ -160,7 +164,7 @@ export class TNode<Data extends TNodeData = {}> {
    * @param data - {@link TNodeData} to add
    * @returns this {@link TNode}
    */
-  private __setData<NewData extends TNodeData>(data: NewData): TNode<NewData> {
+  protected __setData<NewData extends TNodeData>(data: NewData): TNode<NewData> {
     this._data = data as any;
     return this as TNode<NewData>;
   }
@@ -168,28 +172,28 @@ export class TNode<Data extends TNodeData = {}> {
   /**
    * @returns key of this node
    */
-  private $key(): string {
+  protected $key(): string {
     return this._key;
   }
 
   /**
    * @returns depth of this node
    */
-  private $depth(): number {
+  protected $depth(): number {
     return this._depth;
   }
 
   /**
    * @returns parent of this node, or null if node is a root
    */
-  private $parent(): TNode | null {
+  protected $parent(): TNode | null {
     return this._parent;
   }
 
   /**
    * @returns children {@link TNode} of this node
    */
-  private $children(): TNode[] {
+  protected $children(): TNode[] {
     return this._children;
   }
 
@@ -199,7 +203,7 @@ export class TNode<Data extends TNodeData = {}> {
    * @param params - a {@link TNodeGetPathParams} instruction for how path is constructed
    * @returns path
    */
-  private $path(params: TNodeGetPathParams = {}): string {
+  protected $path(params: TNodeGetPathParams = {}): string {
     const { depth = this._pathSegments.length, separator = '/', reversed = false, till } = params;
     const len = this._pathSegments.length;
 
@@ -231,14 +235,14 @@ export class TNode<Data extends TNodeData = {}> {
   /**
    * @returns whether node is a root (no parent)
    */
-  private $isRoot(): boolean {
+  protected $isRoot(): boolean {
     return !this.$parent();
   }
 
   /**
    * @returns root {@link TNode} of the tree
    */
-  private $root(): TNode {
+  protected $root(): TNode {
     let node: TNode = this as TNode;
     while (node.$parent()) {
       node = node.$parent();
@@ -250,7 +254,7 @@ export class TNode<Data extends TNodeData = {}> {
    * @param options - a {@link TNodeSerializeOptions} object
    * @returns a serializable {@link SerializedTNode} object
    */
-  private $serialize<M extends boolean>(
+  protected $serialize<M extends boolean>(
     options: TNodeSerializeOptions<M, Data> = {},
   ): M extends true ? VerboseSerializedTNode : MinimalSerializedTNode {
     const { verbose, dataSerializer } = options;
@@ -276,7 +280,7 @@ export class TNode<Data extends TNodeData = {}> {
   /**
    * @returns internal data {@link TNodeData} of this node
    */
-  private $data(): Data {
+  protected $data(): Data {
     return this._data;
   }
 
