@@ -1,5 +1,11 @@
 # static-tree
 
+## 1.1.1
+
+### Patch Changes
+
+- [`8460174`](https://github.com/vnphanquang/static-tree/commit/8460174dccfb73751b6e1aad80ee4be74a892e8f) Thanks [@vnphanquang](https://github.com/vnphanquang)! - fix versioning
+
 ## 1.0.1
 
 ### Patch Changes
