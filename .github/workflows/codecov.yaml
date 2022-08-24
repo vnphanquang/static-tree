@@ -6,8 +6,12 @@ on:
     branches:
       - main
     paths:
+      # static-tree
       - "packages/static-tree/src/**"
       - "packages/static-tree/vite.config.ts"
+      # codegen
+      - "packages/codegen/src/**"
+      - "packages/codegen/vite.config.ts"
       - ".github/workflows/codecov.yaml"
 
 jobs:

@@ -1,7 +1,7 @@
 {
   "name": "static-tree-codegen",
   "version": "0.1.0",
-  "description": "Generate typescript code for static-tree",
+  "description": "Code generation for static-tree",
   "main": "lib/index.js",
   "module": "lib/index.esm.js",
   "types": "lib/index.d.ts",
@@ -37,6 +37,7 @@
   "author": "Quang Phan",
   "license": "MIT",
   "dependencies": {
+    "static-tree": "next",
     "typescript": "^4.7.4"
   },
   "devDependencies": {

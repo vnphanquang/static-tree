@@ -1,0 +1,16 @@
+// Vitest Snapshot v1
+
+exports[`generate 1`] = `
+"import { tBuild } from \\"static-tree\\";
+const { node } = tBuild({
+    key: \\"api\\",
+    build: builder => builder.addChild({
+        key: \\"auth\\",
+        build: builder => builder.addChild(\\"logout\\").addChild({
+            key: \\"oauth\\",
+            build: builder => builder.addChild(\\"google\\").addChild(\\"discord\\").addChild(\\"facebook\\").addChild(\\"github\\")
+        }).addChild(\\"login\\")
+    }).addChild(\\"healthcheck\\")
+});
+"
+`;
