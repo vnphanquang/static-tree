@@ -21,7 +21,7 @@ const plugins = (declaration = false) => [
   filesize(),
 ];
 
-const external = [];
+const external = ['typescript'];
 
 const input = resolve(__dirname, './src/index.ts');
 

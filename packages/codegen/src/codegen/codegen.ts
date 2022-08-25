@@ -14,6 +14,11 @@ import {
 const PACKAGE = 'static-tree';
 const BUILDER_HELPER = 'tBuild';
 
+/**
+ * @public
+ * Generate the import statement for `static-tree.tBuild`
+ * @returns `ts.ImportDeclaration`
+ */
 export function generateImportStatement() {
   return factory.createImportDeclaration(
     undefined,
@@ -30,6 +35,12 @@ export function generateImportStatement() {
   );
 }
 
+/**
+ * @public
+ * Generate the build input as in `static-tree.ExtendedTNodeBuildInput`
+ * @param serializedNode - `static-tree.SerializedTNode`
+ * @returns `ts.StringLiteral` if a leaf node, otherwise `ts.ObjectLiteralExpression`
+ */
 export function generateBuildInput(serializedNode: SerializedTNode) {
   const { children, key } = serializedNode;
 
@@ -86,6 +97,13 @@ export function generateBuildInput(serializedNode: SerializedTNode) {
   }
 }
 
+/**
+ * @public
+ * Generate the `static-tree.tBuild` call expression
+ *
+ * @param serializedNode - `static-tree.SerializedTNode`
+ * @returns ts.CallExpression
+ */
 export function generateTBuild(serializedNode: SerializedTNode) {
   const buildInput = generateBuildInput(serializedNode);
   return factory.createCallExpression(factory.createIdentifier(BUILDER_HELPER), undefined, [
@@ -93,6 +111,46 @@ export function generateTBuild(serializedNode: SerializedTNode) {
   ]);
 }
 
+/**
+ * @public
+ * Generate typescript source for `static-tree` from a serialized node
+ *
+ * @remarks
+ *
+ * Currently `data` and `pathResolver` codegen are not supported yet.
+ *
+ * @example
+ *
+ * ```typescript
+ * // (1)
+ * import { tBuild } from 'static-tree';
+ * const { node } = tBuild({
+ *   key: 'api',
+ *   build: (builder) => builder
+ *     .addChild('healthcheck')
+ *     .addChild({
+ *       key: 'auth',
+ *       build: (builder) => builder
+ *         .addChild('logout')
+ *         .addChild('login')
+ *         .addChild({
+ *           key: 'oauth',
+ *           build: (builder) => builder.addChild('google').addChild('github');
+ *         }),
+ *     }),
+ * });
+ *
+ * // (2)
+ * import { generate } from 'static-tree-codegen';
+ * const serialized = node.$.serialized();
+ * const ts = generate(serialized);
+ * // -/> should print out the same typescript code as in (1)
+ *
+ * ```
+ *
+ * @param serializedNode - `static-tree.SerializedTNode`
+ * @returns typescript source code as a string
+ */
 export function generate(serializedNode: SerializedTNode) {
   const sourceFile = createSourceFile('', '', ScriptTarget.Latest, false, ScriptKind.TS);
   const printer = createPrinter({
@@ -120,6 +178,8 @@ export function generate(serializedNode: SerializedTNode) {
       NodeFlags.Const,
     ),
   );
+
+  console.log(nodeAssignment.getFullText());
 
   const printed = printer.printList(
     ListFormat.MultiLine,
