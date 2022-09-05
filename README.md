@@ -10,11 +10,14 @@ Type-safe, extensible static tree builder
 
 ## Table of Contents
 
-
+- [`static-tree`](#static-tree)
+  - [Table of Contents](#table-of-contents)
+  - [Packages](#packages)
+  - [Contributing](#contributing)
 
 ## Packages
 
-This monorepo includes several packages that have self-managed release lifecycle. Refer to each package for more details.
+<!-- This monorepo includes several packages that have self-managed release lifecycle. Refer to each package for more details. -->
 
 | Package | Short Description | Version | Changelog | Docs |
 | --- | --- | --- | --- | --- |

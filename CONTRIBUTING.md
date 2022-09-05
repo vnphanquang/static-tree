@@ -48,6 +48,8 @@ Each pull request should [reference an open issue][github.issues.open] unless th
 
 ## Development
 
+This project is a monorepo that uses [turborepo]. For project-wise commands, see [turbo.json] & [package.json] at root project for available pipelines and scripts.
+
 ### Prerequisites
 
 | Dependency | Description | Version |
@@ -57,7 +59,7 @@ Each pull request should [reference an open issue][github.issues.open] unless th
 
 ### Typical Workflow
 
-Refer to [package.json] for all available scripts
+Refer to `package.json` in each app/package for all available scripts.
 
 - Install packages
 
@@ -97,6 +99,7 @@ Refer to [package.json] for all available scripts
     ```
 
 [package.json]: ./package.json
+[turbo.json]: ./turbo.json
 [changeset]: https://github.com/changesets/changesets
 [github]: https://github.com/vnphanquang/static-tree
 [github.issues]: https://github.com/vnphanquang/static-tree/issues?q=
@@ -111,4 +114,4 @@ Refer to [package.json] for all available scripts
 [npm]: https://www.npmjs.com/
 [node]: https://nodejs.org/en/
 [tsdoc]: https://tsdoc.org/
-[tsdoc.gen]: https://api-extractor.com/pages/setup/generating_docs/
+[turborepo]: https://turborepo.org/
