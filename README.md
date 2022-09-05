@@ -2,7 +2,7 @@
 
 # `static-tree`
 
-[![MIT][license.badge]][license] [![github.actions.changeset.badge]][github.actions.changeset] [![bundlephobia.badge]][bundlephobia] [![codecov.badge]][codecov]
+[![MIT][license.badge]][license] [![github.actions.changeset.badge]][github.actions.changeset] [![codecov.badge]][codecov]
 
 </div>
 
@@ -49,8 +49,6 @@ Type-safe, extensible static tree builder
 [npm.static-tree]: https://www.npmjs.com/package/static-tree
 
 <!-- heading badge -->
-[bundlephobia.badge]: https://img.shields.io/bundlephobia/minzip/static-tree?label=minzipped
-[bundlephobia]: https://bundlephobia.com/package/static-tree
 [license.badge]: https://img.shields.io/badge/license-MIT-blue.svg
 [license]: ./LICENSE
 [github.actions.changeset.badge]: https://github.com/vnphanquang/static-tree/actions/workflows/changeset.yaml/badge.svg
