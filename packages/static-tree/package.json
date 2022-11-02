@@ -6,7 +6,7 @@
   "module": "lib/index.esm.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "build": "rollup -c",
+    "build": "rollup -c --configPlugin typescript",
     "lint": "eslint **/*.{ts,js}",
     "format": "prettier --check \"./**/*.{ts,js,json}\"",
     "test": "vitest --ui --coverage",
@@ -45,6 +45,7 @@
     "@microsoft/api-extractor": "^7.33.5",
     "@rollup/plugin-commonjs": "^23.0.2",
     "@rollup/plugin-node-resolve": "^15.0.1",
+    "@rollup/plugin-typescript": "^9.0.2",
     "@types/node": "^18.11.9",
     "@vitest/coverage-istanbul": "^0.24.5",
     "@vitest/ui": "^0.24.5",
@@ -54,8 +55,8 @@
     "prettier": "^2.7.1",
     "rollup": "^3.2.5",
     "rollup-plugin-filesize": "^9.1.2",
-    "rollup-plugin-typescript2": "^0.34.1",
     "ts-node": "^10.9.1",
+    "tslib": "^2.4.1",
     "typescript": "^4.8.4",
     "vite": "^3.2.2",
     "vitest": "^0.24.5"

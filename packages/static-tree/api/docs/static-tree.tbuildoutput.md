@@ -4,7 +4,7 @@
 
 ## TBuildOutput interface
 
-Output of [tBuild()](./static-tree.tbuild.md)
+Output of 
 
 <b>Signature:</b>
 
@@ -16,6 +16,6 @@ export interface TBuildOutput<Key extends string, ChildrenRecord extends Record<
 
 |  Property | Modifiers | Type | Description |
 |  --- | --- | --- | --- |
-|  [builder](./static-tree.tbuildoutput.builder.md) |  | [ExtendedTNodeBuilder](./static-tree.extendedtnodebuilder.md)<!-- -->&lt;Key, ChildrenRecord, Data&gt; | builder for advanced use cases. See [tBuild()](./static-tree.tbuild.md) for examples |
+|  [builder](./static-tree.tbuildoutput.builder.md) |  | [ExtendedTNodeBuilder](./static-tree.extendedtnodebuilder.md)<!-- -->&lt;Key, ChildrenRecord, Data&gt; | builder for advanced use cases. See  for examples |
 |  [node](./static-tree.tbuildoutput.node.md) |  | [ExtendedTNode](./static-tree.extendedtnode.md)<!-- -->&lt;ChildrenRecord, Data&gt; | built node with type safety for children and data |
 

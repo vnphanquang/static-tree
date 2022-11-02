@@ -9,14 +9,14 @@ Build helper that uses [ExtendedTNodeBuilder](./static-tree.extendedtnodebuilder
 <b>Signature:</b>
 
 ```typescript
-export declare function tBuild<Key extends string, ChildrenRecord extends Record<string, ExtendedTNode>, Data extends TNodeData>(input: ExtendedTNodeBuildInput<Key, ChildrenRecord, Data>): TBuildOutput<Key, ChildrenRecord, Data>;
+export declare function tBuild<Key extends string, ChildrenRecord extends Record<string, ExtendedTNode>, Data extends TNodeData>(builder: ExtendedTNodeBuilder<Key, ChildrenRecord, Data>): TBuildOutput<Key, ChildrenRecord, Data>;
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  input | [ExtendedTNodeBuildInput](./static-tree.extendedtnodebuildinput.md)<!-- -->&lt;Key, ChildrenRecord, Data&gt; |  |
+|  builder | [ExtendedTNodeBuilder](./static-tree.extendedtnodebuilder.md)<!-- -->&lt;Key, ChildrenRecord, Data&gt; |  |
 
 <b>Returns:</b>
 
@@ -34,15 +34,12 @@ Typical usage
 ```typescript
 import { tBuild } = 'static-tree';
 
-const { node } = tBuild({
- key: 'root',
+const { node } = tBuild('root', {
  build: (builder) => builder
    .addData({ some: 'root data' })
    .addChild('leaf')
-   .addChild({
-     key: 'child',
-     build: (builder) => builder.addChild({
-       key: 'grandChild',
+   .addChild('child', {
+     build: (builder) => builder.addChild('grandChild', {
        build: (builder) => builder.addData({ some: 'grand child data' }),
      }),
    }),
@@ -58,13 +55,11 @@ node.child.grandChild.$.path() // -\> 'root/child/grandChild';
 Use `tBuild` builder output in nested `ExtendedTNodeBuildCallback`
 
 ```typescript
-const { builder: externalBuilder } = tBuild({
-  key: 'external',
+const { builder: externalBuilder } = tBuild('external', {
   build: (builder) => builder.addChild('child').addData({ some: 'data' }),
 });
 
-const { node } = tBuild({
-  key: 'root',
+const { node } = tBuild('root', {
   build: (builder) => builder.addChild(externalBuilder),
 });
 ```

@@ -16,7 +16,7 @@ export declare class TNode<Data extends TNodeData = {}>
 
 <h3>Constructing TNode</h3>
 
-`TNode` is exported in the public api but you should probably avoid constructing `TNode` directly. Instead, use the [tBuild()](./static-tree.tbuild.md) helper, as they provide type safety and extension to `TNode` for better developer experience.
+`TNode` is exported in the public api but you should probably avoid constructing `TNode` directly. Instead, use the  helper, as they provide type safety and extension to `TNode` for better developer experience.
 
 <h3>Using TNode</h3>
 

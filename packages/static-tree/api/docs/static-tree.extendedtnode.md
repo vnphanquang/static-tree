@@ -24,5 +24,5 @@ export declare type ExtendedTNode<ChildrenRecord extends Record<string, Extended
 
 ## Remarks
 
-[ExtendedTNode](./static-tree.extendedtnode.md) is constructed behind the scene using [tBuild()](./static-tree.tbuild.md) (preferred) and [ExtendedTNodeBuilder](./static-tree.extendedtnodebuilder.md)<!-- -->.
+[ExtendedTNode](./static-tree.extendedtnode.md) is constructed behind the scene using  (preferred) and [ExtendedTNodeBuilder](./static-tree.extendedtnodebuilder.md)<!-- -->.
 

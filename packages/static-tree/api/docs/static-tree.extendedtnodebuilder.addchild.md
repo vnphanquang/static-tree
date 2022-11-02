@@ -9,14 +9,14 @@ add a type-safe child to the [ExtendedTNode](./static-tree.extendedtnode.md) to 
 <b>Signature:</b>
 
 ```typescript
-addChild<ChildKey extends string, GrandChildrenRecord extends Record<string, ExtendedTNode>, ChildData extends TNodeData = {}>(input: ExtendedTNodeBuildInput<ChildKey, GrandChildrenRecord, ChildData>): ExtendedTNodeBuilder<Key, ChildrenRecord & Record<ChildKey, ExtendedTNode<GrandChildrenRecord, ChildData>>, Data>;
+addChild<ChildKey extends string, GrandChildrenRecord extends Record<string, ExtendedTNode>, ChildData extends TNodeData = {}>(builder: ExtendedTNodeBuilder<ChildKey, GrandChildrenRecord, ChildData>): ExtendedTNodeBuilder<Key, ChildrenRecord & Record<ChildKey, ExtendedTNode<GrandChildrenRecord, ChildData>>, Data>;
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  input | [ExtendedTNodeBuildInput](./static-tree.extendedtnodebuildinput.md)<!-- -->&lt;ChildKey, GrandChildrenRecord, ChildData&gt; | an [ExtendedTNodeBuildInput](./static-tree.extendedtnodebuildinput.md) instruction |
+|  builder | [ExtendedTNodeBuilder](./static-tree.extendedtnodebuilder.md)<!-- -->&lt;ChildKey, GrandChildrenRecord, ChildData&gt; |  |
 
 <b>Returns:</b>
 
@@ -31,8 +31,7 @@ this [ExtendedTNodeBuilder](./static-tree.extendedtnodebuilder.md)
 ```typescript
 import { tBuild } from 'static-tree';
 
-const { node } = tBuild({
-  key: 'root',
+const { node } = tBuild('root', {
   build: (builder) => builder.addChild('child'),
 });
 ```
@@ -44,11 +43,9 @@ const { node } = tBuild({
 ```typescript
 import { tBuild } from 'static-tree';
 
-const { node } = tBuild({
-  key: 'root',
+const { node } = tBuild('root', {
   build: (builder) => builder
-    .addChild({
-       key: 'child',
+    .addChild('child', {
        build: (builder) => builder
          .addData({ some: 'child data' })
          .addChild('grandChildren'),
@@ -65,9 +62,8 @@ import { tBuild, ExtendedTNodeBuilder } from 'static-tree';
 
 const externalBuilder = new ExtendedTNodeBuilder('external');
 
-const { node } = tBuild({
-  key: 'root',
-  build: (builder) => builder.addChildren(externalBuilder),
+const { node } = tBuild('root', {
+  build: (builder) => builder.addChild(externalBuilder),
 });
 ```
 

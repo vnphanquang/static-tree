@@ -14,7 +14,7 @@ export declare class ExtendedTNodeBuilder<Key extends string, ChildrenRecord ext
 
 ## Remarks
 
-This is used internally by [tBuild()](./static-tree.tbuild.md)<!-- -->. Alternatively, this can be used if a more method-based, verbose solution is preferred.
+This is used internally by . Alternatively, this can be used if a more method-based, verbose solution is preferred.
 
 ## Example 1
 
@@ -24,13 +24,12 @@ import { ExtendedTNodeBuilder } from 'static-tree';
 
 const node = new ExtendedTNodeBuilder('key')
   .addData({ number: 1, boolean: true, string: 'string' })
-  .addChild({
-     key: 'childOne',
+  .addChild('childOne', {
      build: (builder) => builder
        .addData({ childData: 'something else' })
-       .addChildren('grandChild),
+       .addChild('grandChild'),
   })
-  .addChild('childTwo', builder => builder.addChild('grandChild'))
+  .addChild('childTwo', { build: (builder) => builder.addChild('grandChild') })
   .build();
 ```
 
@@ -45,8 +44,7 @@ const externalBuilder = new ExtendedTNodeBuilder('external')
  .addData({ some: 'some' })
  .addChild('someChild');
 
-const { node } = tBuild({
-  key: 'root',
+const { node } = tBuild('root', {
   build: (builder) => builder.addChild(externalBuilder),
 });
 
@@ -63,7 +61,8 @@ node.external.someChild.$.path(); // -\> `root/external/someChild`
 
 |  Method | Modifiers | Description |
 |  --- | --- | --- |
-|  [addChild(input)](./static-tree.extendedtnodebuilder.addchild.md) |  | add a type-safe child to the [ExtendedTNode](./static-tree.extendedtnode.md) to be built |
+|  [addChild(builder)](./static-tree.extendedtnodebuilder.addchild.md) |  | add a type-safe child to the [ExtendedTNode](./static-tree.extendedtnode.md) to be built |
+|  [addChild(key, config)](./static-tree.extendedtnodebuilder.addchild_1.md) |  |  |
 |  [addData(data)](./static-tree.extendedtnodebuilder.adddata.md) |  | add type-safe data to the [ExtendedTNode](./static-tree.extendedtnode.md) to be built |
 |  [build()](./static-tree.extendedtnodebuilder.build.md) |  | Build the [ExtendedTNode](./static-tree.extendedtnode.md) |
 

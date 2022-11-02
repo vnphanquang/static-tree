@@ -4,7 +4,7 @@
 
 ## TBuildOutput.builder property
 
-builder for advanced use cases. See [tBuild()](./static-tree.tbuild.md) for examples
+builder for advanced use cases. See  for examples
 
 <b>Signature:</b>
 

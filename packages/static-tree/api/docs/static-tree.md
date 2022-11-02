@@ -17,14 +17,16 @@ Type-safe static tree builder
 
 |  Function | Description |
 |  --- | --- |
-|  [tBuild(input)](./static-tree.tbuild.md) | Build helper that uses [ExtendedTNodeBuilder](./static-tree.extendedtnodebuilder.md) internally. |
+|  [tBuild(builder)](./static-tree.tbuild.md) | Build helper that uses [ExtendedTNodeBuilder](./static-tree.extendedtnodebuilder.md) internally. |
+|  [tBuild(key, config)](./static-tree.tbuild_1.md) |  |
 
 ## Interfaces
 
 |  Interface | Description |
 |  --- | --- |
+|  [ExtendedTNodeBuildConfig](./static-tree.extendedtnodebuildconfig.md) | Instruction for building nested [ExtendedTNode](./static-tree.extendedtnode.md)<!-- -->. |
 |  [MinimalSerializedTNode](./static-tree.minimalserializedtnode.md) | Interface of a minimally serialized node |
-|  [TBuildOutput](./static-tree.tbuildoutput.md) | Output of [tBuild()](./static-tree.tbuild.md) |
+|  [TBuildOutput](./static-tree.tbuildoutput.md) | Output of  |
 |  [TNodeGetPathParams](./static-tree.tnodegetpathparams.md) | Instruction on how to construct path to / from current node |
 |  [TNodeInit](./static-tree.tnodeinit.md) | Additional instruction during [TNode](./static-tree.tnode.md) construction |
 |  [TNodeInternalApi](./static-tree.tnodeinternalapi.md) | The proxy api intended for internal or advanced use Refer to [TNode](./static-tree.tnode.md) for documentation of each method. |
@@ -46,7 +48,6 @@ root.$.children().find(c => c.key === 'child')?.$.children().find(c => c.key ===
 ```
  |
 |  [ExtendedTNodeBuildCallback](./static-tree.extendedtnodebuildcallback.md) | Build callback for adding data &amp; nested children |
-|  [ExtendedTNodeBuildInput](./static-tree.extendedtnodebuildinput.md) | <p>Instruction for building nested [ExtendedTNode](./static-tree.extendedtnode.md)<!-- -->.</p><p>Can be one of the following:</p><p>- a string as the key of the node to be built</p><p>- an [ExtendedTNodeBuilder](./static-tree.extendedtnodebuilder.md) object</p><p>- an object with <code>key</code> &amp; an optional [ExtendedTNodeBuildCallback](./static-tree.extendedtnodebuildcallback.md)</p> |
 |  [SerializedTNode](./static-tree.serializedtnode.md) | Possible types of serialized node, depending on how [TNodeSerializeOptions](./static-tree.tnodeserializeoptions.md) is setup |
-|  [TNodeData](./static-tree.tnodedata.md) | Inner data of node. See [tBuild()](./static-tree.tbuild.md) for idiomatic examples on adding data to node. See [TNode](./static-tree.tnode.md) for more information on how this data is stored. |
+|  [TNodeData](./static-tree.tnodedata.md) | Inner data of node. See  for idiomatic examples on adding data to node. See [TNode](./static-tree.tnode.md) for more information on how this data is stored. |
 

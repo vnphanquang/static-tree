@@ -4,7 +4,7 @@
 
 ## TNodeData type
 
-Inner data of node. See [tBuild()](./static-tree.tbuild.md) for idiomatic examples on adding data to node. See [TNode](./static-tree.tnode.md) for more information on how this data is stored.
+Inner data of node. See  for idiomatic examples on adding data to node. See [TNode](./static-tree.tnode.md) for more information on how this data is stored.
 
 <b>Signature:</b>
 

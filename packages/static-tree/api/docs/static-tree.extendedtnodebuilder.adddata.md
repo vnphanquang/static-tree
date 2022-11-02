@@ -31,8 +31,7 @@ Using `tBuild`
 ```typescript
 import { tBuild } from 'static-tree';
 
-const { node } = tBuild({
-  key: 'root',
+const { node } = tBuild('root', {
   build: (builder) => builder.addData({ some: 'data' }),
 });
 ```

@@ -11,19 +11,22 @@ export type ExtendedTNode<ChildrenRecord extends Record<string, ExtendedTNode> =
 export type ExtendedTNodeBuildCallback<Key extends string, ChildrenRecord extends Record<string, ExtendedTNode>, Data extends TNodeData = {}> = (builder: ExtendedTNodeBuilder<Key>) => ExtendedTNodeBuilder<Key, ChildrenRecord, Data>;
 
 // @public
-export class ExtendedTNodeBuilder<Key extends string, ChildrenRecord extends Record<string, ExtendedTNode> = {}, Data extends TNodeData = {}> {
-    constructor(key: Key, options?: Omit<TNodeInit<Data>, 'data'>);
-    addChild<ChildKey extends string, GrandChildrenRecord extends Record<string, ExtendedTNode>, ChildData extends TNodeData = {}>(input: ExtendedTNodeBuildInput<ChildKey, GrandChildrenRecord, ChildData>): ExtendedTNodeBuilder<Key, ChildrenRecord & Record<ChildKey, ExtendedTNode<GrandChildrenRecord, ChildData>>, Data>;
-    addData<D extends TNodeData>(data: D): ExtendedTNodeBuilder<Key, ChildrenRecord, D>;
-    build(): ExtendedTNode<ChildrenRecord, Data>;
+export interface ExtendedTNodeBuildConfig<Key extends string, ChildrenRecord extends Record<string, ExtendedTNode>, Data extends TNodeData = {}> {
+    // (undocumented)
+    build?: ExtendedTNodeBuildCallback<Key, ChildrenRecord, Data>;
+    // (undocumented)
+    pathResolver?: TNodeInit<Data>['pathResolver'];
 }
 
 // @public
-export type ExtendedTNodeBuildInput<Key extends string, ChildrenRecord extends Record<string, ExtendedTNode>, Data extends TNodeData = {}> = Key | ExtendedTNodeBuilder<Key, ChildrenRecord, Data> | {
-    key: Key;
-    pathResolver?: TNodeInit<Data>['pathResolver'];
-    build?: ExtendedTNodeBuildCallback<Key, ChildrenRecord, Data>;
-};
+export class ExtendedTNodeBuilder<Key extends string, ChildrenRecord extends Record<string, ExtendedTNode> = {}, Data extends TNodeData = {}> {
+    constructor(key: Key, options?: Omit<TNodeInit<Data>, 'data'>);
+    addChild<ChildKey extends string, GrandChildrenRecord extends Record<string, ExtendedTNode>, ChildData extends TNodeData = {}>(builder: ExtendedTNodeBuilder<ChildKey, GrandChildrenRecord, ChildData>): ExtendedTNodeBuilder<Key, ChildrenRecord & Record<ChildKey, ExtendedTNode<GrandChildrenRecord, ChildData>>, Data>;
+    // (undocumented)
+    addChild<ChildKey extends string, GrandChildrenRecord extends Record<string, ExtendedTNode>, ChildData extends TNodeData = {}>(key: ChildKey, config?: ExtendedTNodeBuildConfig<ChildKey, GrandChildrenRecord, ChildData>): ExtendedTNodeBuilder<Key, ChildrenRecord & Record<ChildKey, ExtendedTNode<GrandChildrenRecord, ChildData>>, Data>;
+    addData<D extends TNodeData>(data: D): ExtendedTNodeBuilder<Key, ChildrenRecord, D>;
+    build(): ExtendedTNode<ChildrenRecord, Data>;
+}
 
 // @public
 export interface MinimalSerializedTNode {
@@ -36,7 +39,10 @@ export interface MinimalSerializedTNode {
 export type SerializedTNode = VerboseSerializedTNode | MinimalSerializedTNode;
 
 // @public
-export function tBuild<Key extends string, ChildrenRecord extends Record<string, ExtendedTNode>, Data extends TNodeData>(input: ExtendedTNodeBuildInput<Key, ChildrenRecord, Data>): TBuildOutput<Key, ChildrenRecord, Data>;
+export function tBuild<Key extends string, ChildrenRecord extends Record<string, ExtendedTNode>, Data extends TNodeData>(builder: ExtendedTNodeBuilder<Key, ChildrenRecord, Data>): TBuildOutput<Key, ChildrenRecord, Data>;
+
+// @public (undocumented)
+export function tBuild<Key extends string, ChildrenRecord extends Record<string, ExtendedTNode>, Data extends TNodeData>(key: Key, config?: ExtendedTNodeBuildConfig<Key, ChildrenRecord, Data>): TBuildOutput<Key, ChildrenRecord, Data>;
 
 // @public
 export interface TBuildOutput<Key extends string, ChildrenRecord extends Record<string, ExtendedTNode>, Data extends TNodeData> {
