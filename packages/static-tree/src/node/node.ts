@@ -166,7 +166,7 @@ export class TNode<Data extends TNodeData = {}> {
    */
   protected __setData<NewData extends TNodeData>(data: NewData): TNode<NewData> {
     this._data = data as any;
-    return this as TNode<NewData>;
+    return this as unknown as TNode<NewData>;
   }
 
   /**
