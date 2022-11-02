@@ -1,5 +1,15 @@
 # static-tree
 
+## 1.2.0
+
+### Minor Changes
+
+- [#5](https://github.com/vnphanquang/static-tree/pull/5) [`8544a4c`](https://github.com/vnphanquang/static-tree/commit/8544a4c4b468262109ecb4139f4a720c6b23b2a1) Thanks [@vnphanquang](https://github.com/vnphanquang)! - [breaking] separate key as mandatory own function argument for better type support
+
+### Patch Changes
+
+- [#5](https://github.com/vnphanquang/static-tree/pull/5) [`8544a4c`](https://github.com/vnphanquang/static-tree/commit/8544a4c4b468262109ecb4139f4a720c6b23b2a1) Thanks [@vnphanquang](https://github.com/vnphanquang)! - should pass `pathResolver` on nested children
+
 ## 1.1.1
 
 ### Patch Changes
