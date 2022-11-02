@@ -190,7 +190,7 @@ export class ExtendedTNodeBuilder<
    */
   public addData<D extends TNodeData>(data: D): ExtendedTNodeBuilder<Key, ChildrenRecord, D> {
     this._node.__.setData(data);
-    return this as ExtendedTNodeBuilder<Key, ChildrenRecord, D>;
+    return this as unknown as ExtendedTNodeBuilder<Key, ChildrenRecord, D>;
   }
 
   /**
