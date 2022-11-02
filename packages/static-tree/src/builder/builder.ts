@@ -145,15 +145,12 @@ export class ExtendedTNodeBuilder<
       node.__.setParent(this._node);
     } else {
       key = input.key;
-      node =
-        input
-          .build?.(
-            new ExtendedTNodeBuilder(key, {
-              parent: this._node,
-              pathResolver: input.pathResolver,
-            }),
-          )
-          .build() ?? new TNode(key, { parent: this._node });
+      const options = { parent: this._node, pathResolver: input.pathResolver };
+      if (input.build) {
+        node = input.build?.(new ExtendedTNodeBuilder(key, options)).build();
+      } else {
+        node = new TNode(key, options);
+      }
     }
 
     (this._node as any)[key] = node;
