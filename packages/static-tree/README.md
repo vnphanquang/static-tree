@@ -40,22 +40,18 @@ pnpm add static-tree
     ```typescript
     import { tBuild } from 'static-tree';
 
-    const { node: root } = tBuild({ // you can rename node here to whatever
-      key: 'root',
+    const { node: root } = tBuild('root', { // you can rename node here to whatever
       build: (builder) => builder
         .addData({ some: 'data' })
         .addChild('leaf')
-        .addChild({
-          key: 'nestedChild',
+        .addChild('nestedChild', {
           build: (builder) => builder
             .addData({ nestedChildData: 101 })
-            .addChild({
-              key: 'grandChild',
+            .addChild('grandChild', {
               build: (builder) => builder.addChild('grandGrandChild'),
             }),
         })
-        .addChild({
-          key: 'anotherNestedChild',
+        .addChild('anotherNestedChild', {
           build: (builder) => builder.addChild('grandChild'),
         })
     });
@@ -175,16 +171,13 @@ Introducing `static-tree`, arguably a better alternative to the above.
 ```typescript
 import { tBuild } from 'static-tree';
 
-const { node: api } = tBuild({
-  key: 'api',
+const { node: api } = tBuild('api', {
   pathResolver: () => 'https://api.domain.example',
   build: (builder) => builder
-    .addChild({
-      key: 'auth',
+    .addChild('auth', {
       build: (builder) => builder
         .addChild('logout')
-        .addChild({
-          key: 'oauth',
+        .addChild('oauth', {
           build: (builder) => builder
             .addChild('google')
             .addChild('discord'),
