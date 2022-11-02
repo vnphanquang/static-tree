@@ -25,27 +25,21 @@ export const TNODE_MOCK_DATA = {
   },
 } as const;
 
-const { node: sTree } = tBuild({
-  key: 'key',
+const { node: sTree } = tBuild('key', {
   pathResolver: () => 'customPathSegment',
   build: (builder) =>
-    builder.addData(TNODE_MOCK_DATA).addChild({
-      key: 'child',
+    builder.addData(TNODE_MOCK_DATA).addChild('child', {
       build: (builder) =>
         builder
           .addChild('justKey')
-          .addChild({ key: 'inputJustKey' })
           .addChild(new ExtendedTNodeBuilder('external'))
-          .addChild({
-            key: 'tBuild',
+          .addChild('tBuild', {
             build: (builder) =>
               builder
-                .addChild(tBuild({ key: 'tBuildInputJustKey' }).builder)
                 .addChild(tBuild('tBuildJustKey').builder)
                 .addChild(tBuild(new ExtendedTNodeBuilder('tBuildWithBuilder')).builder)
                 .addChild(
-                  tBuild({
-                    key: 'tBuildFull',
+                  tBuild('tBuildFull', {
                     build: (builder) => builder.addChild('final'),
                   }).builder,
                 ),
@@ -63,12 +57,8 @@ describe('tBuild', () => {
     expect(sTree.$.key()).toBe('key');
     expect(sTree.child.$.path()).toBe('customPathSegment/child');
     expect(sTree.child.justKey.$.path()).toBe('customPathSegment/child/justKey');
-    expect(sTree.child.inputJustKey.$.path()).toBe('customPathSegment/child/inputJustKey');
     expect(sTree.child.external.$.path()).toBe('customPathSegment/child/external');
     expect(sTree.child.tBuild.$.path()).toBe('customPathSegment/child/tBuild');
-    expect(sTree.child.tBuild.tBuildInputJustKey.$.path()).toBe(
-      'customPathSegment/child/tBuild/tBuildInputJustKey',
-    );
     expect(sTree.child.tBuild.tBuildJustKey.$.path()).toBe(
       'customPathSegment/child/tBuild/tBuildJustKey',
     );
@@ -89,19 +79,25 @@ describe('tBuild', () => {
 });
 
 describe('real life example test', () => {
-  const { node: api } = tBuild({
-    key: 'api',
+  const { node: api } = tBuild('api', {
     pathResolver: () => 'https://api.domain.example',
     build: (builder) =>
-      builder.addChild({
-        key: 'auth',
-        build: (builder) =>
-          builder.addChild('logout').addChild({
-            key: 'oauth',
-            build: (builder) => builder.addChild('google').addChild('discord'),
-            //...
-          }),
-      }),
+      builder
+        .addChild('auth', {
+          build: (builder) =>
+            builder
+              .addChild('logout')
+              .addChild('oauth', {
+                build: (builder) => builder.addChild('google').addChild('discord'),
+                //...
+              })
+              .addChild('nestedCamelCaseKey', {
+                pathResolver: () => 'nested-camel-case-key',
+              }),
+        })
+        .addChild('camelCaseKey', {
+          pathResolver: () => 'camel-case-key',
+        }),
   });
 
   test('full path should match', () => {
@@ -112,5 +108,11 @@ describe('real life example test', () => {
   });
   test('path with negative depth should match', () => {
     expect(api.auth.oauth.google.$.path({ depth: -2 }), 'https://api.domain.example/auth');
+  });
+  test('custom pathResolver should resolve correctly', () => {
+    expect(api.camelCaseKey.$.path()).toBe('https://api.domain.example/camel-case-key');
+    expect(api.auth.nestedCamelCaseKey.$.path()).toBe(
+      'https://api.domain.example/auth/nested-camel-case-key',
+    );
   });
 });

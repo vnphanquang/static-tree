@@ -35,30 +35,15 @@ export type ExtendedTNode<
  *
  * Instruction for building nested {@link ExtendedTNode}.
  *
- * Can be one of the following:
- *
- * - a string as the key of the node to be built
- *
- * - an {@link ExtendedTNodeBuilder} object
- *
- * - an object with `key` & an optional {@link ExtendedTNodeBuildCallback}
- *
  */
-export type ExtendedTNodeBuildInput<
+export interface ExtendedTNodeBuildConfig<
   Key extends string,
   ChildrenRecord extends Record<string, ExtendedTNode>,
   Data extends TNodeData = {},
-> =
-  | Key
-  | ExtendedTNodeBuilder<Key, ChildrenRecord, Data>
-  | {
-      /**
-       * key for {@link ExtendedTNode} to be built
-       */
-      key: Key;
-      pathResolver?: TNodeInit<Data>['pathResolver'];
-      build?: ExtendedTNodeBuildCallback<Key, ChildrenRecord, Data>;
-    };
+> {
+  pathResolver?: TNodeInit<Data>['pathResolver'];
+  build?: ExtendedTNodeBuildCallback<Key, ChildrenRecord, Data>;
+}
 
 /**
  * @public

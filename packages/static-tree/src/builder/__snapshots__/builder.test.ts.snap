@@ -23,19 +23,6 @@ exports[`tBuild > serialization should match 1`] = `
           "data": {},
           "depth": 3,
           "isRoot": false,
-          "key": "inputJustKey",
-          "path": "customPathSegment/child/inputJustKey",
-          "pathSegments": [
-            "customPathSegment",
-            "child",
-            "inputJustKey",
-          ],
-        },
-        {
-          "children": [],
-          "data": {},
-          "depth": 3,
-          "isRoot": false,
           "key": "external",
           "path": "customPathSegment/child/external",
           "pathSegments": [
@@ -46,20 +33,6 @@ exports[`tBuild > serialization should match 1`] = `
         },
         {
           "children": [
-            {
-              "children": [],
-              "data": {},
-              "depth": 4,
-              "isRoot": false,
-              "key": "tBuildInputJustKey",
-              "path": "customPathSegment/child/tBuild/tBuildInputJustKey",
-              "pathSegments": [
-                "customPathSegment",
-                "child",
-                "tBuild",
-                "tBuildInputJustKey",
-              ],
-            },
             {
               "children": [],
               "data": {},

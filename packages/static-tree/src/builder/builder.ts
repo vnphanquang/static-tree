@@ -3,7 +3,7 @@
 import { TNode } from '../node';
 import type { TNodeData, TNodeInit } from '../node';
 
-import type { ExtendedTNode, ExtendedTNodeBuildInput, TBuildOutput } from './builder.types';
+import type { ExtendedTNode, ExtendedTNodeBuildConfig, TBuildOutput } from './builder.types';
 
 /**
  * @public
@@ -22,13 +22,12 @@ import type { ExtendedTNode, ExtendedTNodeBuildInput, TBuildOutput } from './bui
  *
  * const node = new ExtendedTNodeBuilder('key')
  *   .addData({ number: 1, boolean: true, string: 'string' })
- *   .addChild({
- *      key: 'childOne',
+ *   .addChild('childOne', {
  *      build: (builder) => builder
  *        .addData({ childData: 'something else' })
- *        .addChildren('grandChild),
+ *        .addChild('grandChild'),
  *   })
- *   .addChild('childTwo', builder => builder.addChild('grandChild'))
+ *   .addChild('childTwo', { build: (builder) => builder.addChild('grandChild') })
  *   .build();
  * ```
  *
@@ -44,8 +43,7 @@ import type { ExtendedTNode, ExtendedTNodeBuildInput, TBuildOutput } from './bui
  *  .addData({ some: 'some' })
  *  .addChild('someChild');
  *
- * const { node } = tBuild({
- *   key: 'root',
+ * const { node } = tBuild('root', {
  *   build: (builder) => builder.addChild(externalBuilder),
  * });
  *
@@ -79,8 +77,7 @@ export class ExtendedTNodeBuilder<
    * ```typescript
    * import { tBuild } from 'static-tree';
    *
-   * const { node } = tBuild({
-   *   key: 'root',
+   * const { node } = tBuild('root', {
    *   build: (builder) => builder.addChild('child'),
    * });
    * ```
@@ -92,11 +89,9 @@ export class ExtendedTNodeBuilder<
    * ```typescript
    * import { tBuild } from 'static-tree';
    *
-   * const { node } = tBuild({
-   *   key: 'root',
+   * const { node } = tBuild('root', {
    *   build: (builder) => builder
-   *     .addChild({
-   *        key: 'child',
+   *     .addChild('child', {
    *        build: (builder) => builder
    *          .addData({ some: 'child data' })
    *          .addChild('grandChildren'),
@@ -113,13 +108,12 @@ export class ExtendedTNodeBuilder<
    *
    * const externalBuilder = new ExtendedTNodeBuilder('external');
    *
-   * const { node } = tBuild({
-   *   key: 'root',
-   *   build: (builder) => builder.addChildren(externalBuilder),
+   * const { node } = tBuild('root', {
+   *   build: (builder) => builder.addChild(externalBuilder),
    * });
    * ```
    *
-   * @param input - an {@link ExtendedTNodeBuildInput} instruction
+   * @param input - an {@link ExtendedTNodeBuildConfig} instruction
    * @returns this {@link ExtendedTNodeBuilder}
    */
   public addChild<
@@ -127,33 +121,54 @@ export class ExtendedTNodeBuilder<
     GrandChildrenRecord extends Record<string, ExtendedTNode>,
     ChildData extends TNodeData = {},
   >(
-    input: ExtendedTNodeBuildInput<ChildKey, GrandChildrenRecord, ChildData>,
+    builder: ExtendedTNodeBuilder<ChildKey, GrandChildrenRecord, ChildData>,
+  ): ExtendedTNodeBuilder<
+    Key,
+    ChildrenRecord & Record<ChildKey, ExtendedTNode<GrandChildrenRecord, ChildData>>,
+    Data
+  >;
+  public addChild<
+    ChildKey extends string,
+    GrandChildrenRecord extends Record<string, ExtendedTNode>,
+    ChildData extends TNodeData = {},
+  >(
+    key: ChildKey,
+    config?: ExtendedTNodeBuildConfig<ChildKey, GrandChildrenRecord, ChildData>,
+  ): ExtendedTNodeBuilder<
+    Key,
+    ChildrenRecord & Record<ChildKey, ExtendedTNode<GrandChildrenRecord, ChildData>>,
+    Data
+  >;
+  public addChild<
+    ChildKey extends string,
+    GrandChildrenRecord extends Record<string, ExtendedTNode>,
+    ChildData extends TNodeData = {},
+  >(
+    input: ChildKey | ExtendedTNodeBuilder<ChildKey, GrandChildrenRecord, ChildData>,
+    config?: ExtendedTNodeBuildConfig<ChildKey, GrandChildrenRecord, ChildData>,
   ): ExtendedTNodeBuilder<
     Key,
     ChildrenRecord & Record<ChildKey, ExtendedTNode<GrandChildrenRecord, ChildData>>,
     Data
   > {
-    let key: ChildKey;
+    let rKey: ChildKey;
     let node: TNode;
 
-    if (typeof input === 'string') {
-      key = input;
-      node = new ExtendedTNodeBuilder(key, { parent: this._node }).build();
-    } else if (input instanceof ExtendedTNodeBuilder) {
-      key = input._key;
+    if (input instanceof ExtendedTNodeBuilder) {
+      rKey = input._key;
       node = input.build();
       node.__.setParent(this._node);
     } else {
-      key = input.key;
-      const options = { parent: this._node, pathResolver: input.pathResolver };
-      if (input.build) {
-        node = input.build?.(new ExtendedTNodeBuilder(key, options)).build();
+      rKey = input;
+      const options = { parent: this._node, pathResolver: config?.pathResolver };
+      if (config?.build) {
+        node = config.build(new ExtendedTNodeBuilder(rKey, options)).build();
       } else {
-        node = new TNode(key, options);
+        node = new TNode(rKey, options);
       }
     }
 
-    (this._node as any)[key] = node;
+    (this._node as any)[rKey] = node;
 
     return this as unknown as ExtendedTNodeBuilder<
       Key,
@@ -172,8 +187,7 @@ export class ExtendedTNodeBuilder<
    * ```typescript
    * import { tBuild } from 'static-tree';
    *
-   * const { node } = tBuild({
-   *   key: 'root',
+   * const { node } = tBuild('root', {
    *   build: (builder) => builder.addData({ some: 'data' }),
    * });
    * ```
@@ -218,15 +232,12 @@ export class ExtendedTNodeBuilder<
  * ```typescript
  * import { tBuild } = 'static-tree';
  *
- * const { node } = tBuild({
- *  key: 'root',
+ * const { node } = tBuild('root', {
  *  build: (builder) => builder
  *    .addData({ some: 'root data' })
  *    .addChild('leaf')
- *    .addChild({
- *      key: 'child',
- *      build: (builder) => builder.addChild({
- *        key: 'grandChild',
+ *    .addChild('child', {
+ *      build: (builder) => builder.addChild('grandChild', {
  *        build: (builder) => builder.addData({ some: 'grand child data' }),
  *      }),
  *    }),
@@ -242,13 +253,11 @@ export class ExtendedTNodeBuilder<
  * Use `tBuild` builder output in nested `ExtendedTNodeBuildCallback`
  *
  * ```typescript
- * const { builder: externalBuilder } = tBuild({
- *   key: 'external',
+ * const { builder: externalBuilder } = tBuild('external', {
  *   build: (builder) => builder.addChild('child').addData({ some: 'data' }),
  * });
  *
- * const { node } = tBuild({
- *   key: 'root',
+ * const { node } = tBuild('root', {
  *   build: (builder) => builder.addChild(externalBuilder),
  * });
  * ```
@@ -262,21 +271,37 @@ export function tBuild<
   ChildrenRecord extends Record<string, ExtendedTNode>,
   Data extends TNodeData,
 >(
-  input: ExtendedTNodeBuildInput<Key, ChildrenRecord, Data>,
+  builder: ExtendedTNodeBuilder<Key, ChildrenRecord, Data>,
+): TBuildOutput<Key, ChildrenRecord, Data>;
+export function tBuild<
+  Key extends string,
+  ChildrenRecord extends Record<string, ExtendedTNode>,
+  Data extends TNodeData,
+>(
+  key: Key,
+  config?: ExtendedTNodeBuildConfig<Key, ChildrenRecord, Data>,
+): TBuildOutput<Key, ChildrenRecord, Data>;
+export function tBuild<
+  Key extends string,
+  ChildrenRecord extends Record<string, ExtendedTNode>,
+  Data extends TNodeData,
+>(
+  input: Key | ExtendedTNodeBuilder<Key, ChildrenRecord, Data>,
+  config?: ExtendedTNodeBuildConfig<Key, ChildrenRecord, Data>,
 ): TBuildOutput<Key, ChildrenRecord, Data> {
   let builder: ExtendedTNodeBuilder<Key, ChildrenRecord, Data>;
 
-  if (typeof input === 'string') {
-    builder = new ExtendedTNodeBuilder(input);
-  } else if (input instanceof ExtendedTNodeBuilder) {
+  if (input instanceof ExtendedTNodeBuilder) {
     builder = input;
   } else {
-    builder =
-      input.build?.(
-        new ExtendedTNodeBuilder(input.key, {
-          pathResolver: input.pathResolver,
-        }),
-      ) ?? new ExtendedTNodeBuilder(input.key);
+    const options = {
+      pathResolver: config?.pathResolver,
+    };
+    if (config?.build) {
+      builder = config.build(new ExtendedTNodeBuilder(input, options));
+    } else {
+      builder = new ExtendedTNodeBuilder(input, options);
+    }
   }
 
   return {
