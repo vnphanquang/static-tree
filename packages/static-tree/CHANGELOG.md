@@ -1,5 +1,11 @@
 # static-tree
 
+## 1.3.1
+
+### Patch Changes
+
+- [`e758663`](https://github.com/vnphanquang/static-tree/commit/e758663b9c832f2e5246628db1bdb47fd7819933) Thanks [@vnphanquang](https://github.com/vnphanquang)! - fix typescript build output (rollup)
+
 ## 1.3.0
 
 ### Minor Changes
