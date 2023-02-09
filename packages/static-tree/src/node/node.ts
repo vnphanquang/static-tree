@@ -49,11 +49,10 @@ import type {
  * const child = new TNode('child', { parent, data });
  * ```
  */
-export class TNode<Data extends TNodeData = {}> {
+export class TNode<Data extends TNodeData = {}, Key extends string = any, AncestorKeys extends string = any> {
   private _parent: TNode | null;
   private _key: string;
   private _depth: number;
-  private _pathSegments: string[];
   private _children: TNode[];
   private _data: Data;
   private _pathResolver: TNodeInit<Data>['pathResolver'];
@@ -114,14 +113,6 @@ export class TNode<Data extends TNodeData = {}> {
     }
 
     this._depth = (this._parent?.$depth() ?? 0) + 1;
-
-    this._pathSegments = [];
-    let traversedParent: TNode = this as TNode;
-    while (traversedParent) {
-      const segment = traversedParent._pathResolver(traversedParent);
-      this._pathSegments.unshift(segment);
-      traversedParent = traversedParent.$parent();
-    }
 
     for (const child of this.$children()) {
       child.__setParent(this);
@@ -203,9 +194,17 @@ export class TNode<Data extends TNodeData = {}> {
    * @param params - a {@link TNodeGetPathParams} instruction for how path is constructed
    * @returns path
    */
-  protected $path(params: TNodeGetPathParams = {}): string {
-    const { depth = this._pathSegments.length, separator = '/', reversed = false, till } = params;
-    const len = this._pathSegments.length;
+  protected $path(params: TNodeGetPathParams<Key | AncestorKeys> = {}): string {
+    const pathSegments = [];
+    let traversedParent: TNode = this as TNode;
+    while (traversedParent) {
+      const segment = traversedParent._pathResolver(traversedParent, params.args?.[traversedParent.$key()]);
+      pathSegments.unshift(segment);
+      traversedParent = traversedParent.$parent();
+    }
+
+    const { depth = pathSegments.length, separator = '/', reversed = false, till } = params;
+    const len = pathSegments.length;
 
     let count = Math.abs(depth);
     let node: TNode = this as TNode;
@@ -218,7 +217,6 @@ export class TNode<Data extends TNodeData = {}> {
       }
       node = node.$parent();
     }
-
     let start = anchor;
     let end = len;
     if (depth < 0) {
@@ -226,7 +224,7 @@ export class TNode<Data extends TNodeData = {}> {
       end = till ? len - anchor : depth;
     }
 
-    let segments = this._pathSegments.slice(start, end);
+    let segments = pathSegments.slice(start, end);
     if (reversed) segments = segments.reverse();
 
     return segments.join(separator);
@@ -255,7 +253,7 @@ export class TNode<Data extends TNodeData = {}> {
    * @returns a serializable {@link SerializedTNode} object
    */
   protected $serialize<M extends boolean>(
-    options: TNodeSerializeOptions<M, Data> = {},
+    options: TNodeSerializeOptions<M, Data, Key | AncestorKeys> = {},
   ): M extends true ? VerboseSerializedTNode : MinimalSerializedTNode {
     const { verbose, dataSerializer } = options;
     let data: any = this._data;
@@ -271,8 +269,7 @@ export class TNode<Data extends TNodeData = {}> {
       ...(verbose && {
         depth: this.$depth(),
         isRoot: this.$isRoot(),
-        path: this.$path(),
-        pathSegments: this._pathSegments,
+        path: this.$path(options.paths),
       }),
     } as M extends true ? VerboseSerializedTNode : MinimalSerializedTNode;
   }
@@ -287,7 +284,7 @@ export class TNode<Data extends TNodeData = {}> {
   /**
    * @returns the {@link TNodePublicApi} of {@link TNode}
    */
-  public get $(): TNodePublicApi<Data> {
+  public get $(): TNodePublicApi<Data, Key, AncestorKeys> {
     return {
       key: this.$key.bind(this),
       depth: this.$depth.bind(this),

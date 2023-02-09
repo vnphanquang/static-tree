@@ -52,6 +52,7 @@ import type { ExtendedTNode, ExtendedTNodeBuildConfig, TBuildOutput } from './bu
  */
 export class ExtendedTNodeBuilder<
   Key extends string,
+  AncestorKeys extends string = never,
   ChildrenRecord extends Record<string, ExtendedTNode> = {},
   Data extends TNodeData = {},
 > {
@@ -121,10 +122,11 @@ export class ExtendedTNodeBuilder<
     GrandChildrenRecord extends Record<string, ExtendedTNode>,
     ChildData extends TNodeData = {},
   >(
-    builder: ExtendedTNodeBuilder<ChildKey, GrandChildrenRecord, ChildData>,
+    builder: ExtendedTNodeBuilder<ChildKey, AncestorKeys | Key, GrandChildrenRecord, ChildData>,
   ): ExtendedTNodeBuilder<
     Key,
-    ChildrenRecord & Record<ChildKey, ExtendedTNode<GrandChildrenRecord, ChildData>>,
+    AncestorKeys,
+    ChildrenRecord & Record<ChildKey, ExtendedTNode<ChildKey, AncestorKeys | Key, GrandChildrenRecord, ChildData>>,
     Data
   >;
   public addChild<
@@ -133,10 +135,11 @@ export class ExtendedTNodeBuilder<
     ChildData extends TNodeData = {},
   >(
     key: ChildKey,
-    config?: ExtendedTNodeBuildConfig<ChildKey, GrandChildrenRecord, ChildData>,
+    config?: ExtendedTNodeBuildConfig<ChildKey, AncestorKeys | Key, GrandChildrenRecord, ChildData>,
   ): ExtendedTNodeBuilder<
     Key,
-    ChildrenRecord & Record<ChildKey, ExtendedTNode<GrandChildrenRecord, ChildData>>,
+    AncestorKeys,
+    ChildrenRecord & Record<ChildKey, ExtendedTNode<ChildKey, AncestorKeys | Key, GrandChildrenRecord, ChildData>>,
     Data
   >;
   public addChild<
@@ -144,11 +147,12 @@ export class ExtendedTNodeBuilder<
     GrandChildrenRecord extends Record<string, ExtendedTNode>,
     ChildData extends TNodeData = {},
   >(
-    input: ChildKey | ExtendedTNodeBuilder<ChildKey, GrandChildrenRecord, ChildData>,
-    config?: ExtendedTNodeBuildConfig<ChildKey, GrandChildrenRecord, ChildData>,
+    input: ChildKey | ExtendedTNodeBuilder<ChildKey, AncestorKeys | Key, GrandChildrenRecord, ChildData>,
+    config?: ExtendedTNodeBuildConfig<ChildKey, AncestorKeys | Key, GrandChildrenRecord, ChildData>,
   ): ExtendedTNodeBuilder<
     Key,
-    ChildrenRecord & Record<ChildKey, ExtendedTNode<GrandChildrenRecord, ChildData>>,
+    AncestorKeys,
+    ChildrenRecord & Record<ChildKey, ExtendedTNode<ChildKey, AncestorKeys | Key, GrandChildrenRecord, ChildData>>,
     Data
   > {
     let rKey: ChildKey;
@@ -172,7 +176,8 @@ export class ExtendedTNodeBuilder<
 
     return this as unknown as ExtendedTNodeBuilder<
       Key,
-      ChildrenRecord & Record<ChildKey, ExtendedTNode<GrandChildrenRecord, ChildData>>,
+      AncestorKeys,
+      ChildrenRecord & Record<ChildKey, ExtendedTNode<ChildKey, AncestorKeys | Key, GrandChildrenRecord, ChildData>>,
       Data
     >;
   }
@@ -199,9 +204,9 @@ export class ExtendedTNodeBuilder<
    * @param data - the {@link TNodeData}
    * @returns this {@link ExtendedTNodeBuilder}
    */
-  public addData<D extends TNodeData>(data: D): ExtendedTNodeBuilder<Key, ChildrenRecord, D> {
+  public addData<D extends TNodeData>(data: D): ExtendedTNodeBuilder<Key, AncestorKeys, ChildrenRecord, D> {
     this._node.__.setData(data);
-    return this as unknown as ExtendedTNodeBuilder<Key, ChildrenRecord, D>;
+    return this as unknown as ExtendedTNodeBuilder<Key, AncestorKeys, ChildrenRecord, D>;
   }
 
   /**
@@ -209,8 +214,8 @@ export class ExtendedTNodeBuilder<
    *
    * @returns node {@link ExtendedTNode}
    */
-  public build(): ExtendedTNode<ChildrenRecord, Data> {
-    return this._node as ExtendedTNode<ChildrenRecord, Data>;
+  public build(): ExtendedTNode<Key, AncestorKeys, ChildrenRecord, Data> {
+    return this._node as ExtendedTNode<Key, AncestorKeys, ChildrenRecord, Data>;
   }
 }
 
@@ -270,26 +275,29 @@ export function tBuild<
   Key extends string,
   ChildrenRecord extends Record<string, ExtendedTNode>,
   Data extends TNodeData,
+  AncestorKeys extends string = never,
 >(
-  builder: ExtendedTNodeBuilder<Key, ChildrenRecord, Data>,
-): TBuildOutput<Key, ChildrenRecord, Data>;
+  builder: ExtendedTNodeBuilder<Key, AncestorKeys, ChildrenRecord, Data>,
+): TBuildOutput<Key, AncestorKeys, ChildrenRecord, Data>;
 export function tBuild<
   Key extends string,
   ChildrenRecord extends Record<string, ExtendedTNode>,
   Data extends TNodeData,
+  AncestorKeys extends string = never,
 >(
   key: Key,
-  config?: ExtendedTNodeBuildConfig<Key, ChildrenRecord, Data>,
-): TBuildOutput<Key, ChildrenRecord, Data>;
+  config?: ExtendedTNodeBuildConfig<Key, AncestorKeys, ChildrenRecord, Data>,
+): TBuildOutput<Key, AncestorKeys, ChildrenRecord, Data>;
 export function tBuild<
   Key extends string,
   ChildrenRecord extends Record<string, ExtendedTNode>,
   Data extends TNodeData,
+  AncestorKeys extends string = never,
 >(
-  input: Key | ExtendedTNodeBuilder<Key, ChildrenRecord, Data>,
-  config?: ExtendedTNodeBuildConfig<Key, ChildrenRecord, Data>,
-): TBuildOutput<Key, ChildrenRecord, Data> {
-  let builder: ExtendedTNodeBuilder<Key, ChildrenRecord, Data>;
+  input: Key | ExtendedTNodeBuilder<Key, AncestorKeys, ChildrenRecord, Data>,
+  config?: ExtendedTNodeBuildConfig<Key, AncestorKeys, ChildrenRecord, Data>,
+): TBuildOutput<Key, AncestorKeys, ChildrenRecord, Data> {
+  let builder: ExtendedTNodeBuilder<Key, AncestorKeys, ChildrenRecord, Data>;
 
   if (input instanceof ExtendedTNodeBuilder) {
     builder = input;

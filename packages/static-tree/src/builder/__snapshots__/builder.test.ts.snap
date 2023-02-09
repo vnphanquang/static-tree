@@ -12,11 +12,6 @@ exports[`tBuild > serialization should match 1`] = `
           "isRoot": false,
           "key": "justKey",
           "path": "customPathSegment/child/justKey",
-          "pathSegments": [
-            "customPathSegment",
-            "child",
-            "justKey",
-          ],
         },
         {
           "children": [],
@@ -25,11 +20,6 @@ exports[`tBuild > serialization should match 1`] = `
           "isRoot": false,
           "key": "external",
           "path": "customPathSegment/child/external",
-          "pathSegments": [
-            "customPathSegment",
-            "child",
-            "external",
-          ],
         },
         {
           "children": [
@@ -40,12 +30,6 @@ exports[`tBuild > serialization should match 1`] = `
               "isRoot": false,
               "key": "tBuildJustKey",
               "path": "customPathSegment/child/tBuild/tBuildJustKey",
-              "pathSegments": [
-                "customPathSegment",
-                "child",
-                "tBuild",
-                "tBuildJustKey",
-              ],
             },
             {
               "children": [],
@@ -54,12 +38,6 @@ exports[`tBuild > serialization should match 1`] = `
               "isRoot": false,
               "key": "tBuildWithBuilder",
               "path": "customPathSegment/child/tBuild/tBuildWithBuilder",
-              "pathSegments": [
-                "customPathSegment",
-                "child",
-                "tBuild",
-                "tBuildWithBuilder",
-              ],
             },
             {
               "children": [
@@ -70,13 +48,6 @@ exports[`tBuild > serialization should match 1`] = `
                   "isRoot": false,
                   "key": "final",
                   "path": "customPathSegment/child/tBuild/tBuildFull/final",
-                  "pathSegments": [
-                    "customPathSegment",
-                    "child",
-                    "tBuild",
-                    "tBuildFull",
-                    "final",
-                  ],
                 },
               ],
               "data": {},
@@ -84,12 +55,6 @@ exports[`tBuild > serialization should match 1`] = `
               "isRoot": false,
               "key": "tBuildFull",
               "path": "customPathSegment/child/tBuild/tBuildFull",
-              "pathSegments": [
-                "customPathSegment",
-                "child",
-                "tBuild",
-                "tBuildFull",
-              ],
             },
           ],
           "data": {},
@@ -97,11 +62,6 @@ exports[`tBuild > serialization should match 1`] = `
           "isRoot": false,
           "key": "tBuild",
           "path": "customPathSegment/child/tBuild",
-          "pathSegments": [
-            "customPathSegment",
-            "child",
-            "tBuild",
-          ],
         },
       ],
       "data": {},
@@ -109,10 +69,6 @@ exports[`tBuild > serialization should match 1`] = `
       "isRoot": false,
       "key": "child",
       "path": "customPathSegment/child",
-      "pathSegments": [
-        "customPathSegment",
-        "child",
-      ],
     },
   ],
   "data": {
@@ -137,9 +93,6 @@ exports[`tBuild > serialization should match 1`] = `
         "_key": "example",
         "_parent": null,
         "_pathResolver": [Function],
-        "_pathSegments": [
-          "example",
-        ],
       },
       "set": Set {},
     },
@@ -149,8 +102,5 @@ exports[`tBuild > serialization should match 1`] = `
   "isRoot": true,
   "key": "key",
   "path": "customPathSegment",
-  "pathSegments": [
-    "customPathSegment",
-  ],
 }
 `;
