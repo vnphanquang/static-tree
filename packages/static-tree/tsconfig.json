@@ -17,12 +17,12 @@
     "types": ["node"],
     "incremental": true,
     "declaration": true,
+    "declarationMap": true,
     "sourceMap": true,
     "baseUrl": ".",
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "outDir": "./lib",
-    "declarationDir": "./lib",
+    "outDir": "lib",
     "paths": {}
   }
 }

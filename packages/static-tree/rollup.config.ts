@@ -10,14 +10,6 @@ const plugins = [
   ts({
     tsconfig: 'tsconfig.build.json',
   }),
-  // typescript({
-  //   tsconfig: 'tsconfig.build.json',
-  //   tsconfigDefaults: {
-  //     compilerOptions: {
-  //       declaration,
-  //     },
-  //   },
-  // }),
   nodeResolver(),
   commonjs(),
   filesize(),
