@@ -40,48 +40,67 @@ pnpm add static-tree
     ```typescript
     import { tBuild } from 'static-tree';
 
-    const { node: root } = tBuild('root', { // you can rename node here to whatever
-      build: (builder) => builder
-        .addData({ some: 'data' })
-        .addChild('leaf')
-        .addChild('nestedChild', {
-          build: (builder) => builder
-            .addData({ nestedChildData: 101 })
-            .addChild('grandChild', {
-              build: (builder) => builder.addChild('grandGrandChild'),
-            }),
-        })
-        .addChild('anotherNestedChild', {
-          build: (builder) => builder.addChild('grandChild'),
-        })
+    const { node: api } = tBuild('api', { // you can rename node here to whatever
+      pathResolver: () => 'https://api.domain.example',
+      build: (builder) =>
+        builder
+          .addChild('auth', {
+            build: (builder) =>
+              builder
+                .addChild('logout')
+                .addChild('oauth', {
+                  build: (builder) => builder.addChild('google').addChild('discord'),
+                  //...
+                })
+          })
+          .addChild('camelCaseKey', {
+            pathResolver: () => 'camel-case-key',
+          })
+          .addChild(':organization', { // notice some dynamic path here
+            pathResolver: (_node, arg) => arg,
+            build: (builder) =>
+              builder.addChild(':user', {
+                pathResolver: (_node, arg) => arg,
+              }),
+          }),
     });
     ```
 
     The declaration above will produce this tree structure:
 
     ```tree
-    root
+    api (resolve statically to 'https://api.domain.example' at runtime)
       |
-      |-- leaf
-      |
-      |-- nestedChild
-      .     |
-      .     |-- grandChild
-      .             |
-      .             |-- grandGrandChild
-      |-- anotherNestedChild
+      |-- auth
+      .     |-- logout
+      .     |-- oauth
+      .          |
+      .          |-- google
+      .          |-- discord
+      |-- camelCaseKey (resolved statically to 'camel-case-key' at runtime)
+      |-- :organization (resolved dynamically to the given argument at runtime)
             |
-            |-- grandChild
+            |-- :user (resolved dynamically to the given argument at runtime)
     ```
 
 2. Access type-safe nested children
 
     ```typescript
-    root.nestedChild.grandChild.grandGrandChild.$.path({ separator: '.' });
-    // -> 'root.nestedChild.grandChild.grandGrandChild'
+    root.auth.oauth.google.$.path();
+    // -> 'https://api.domain.example/auth/oauth/google'
 
-    root.nestedChild.leaf.$.depth(); // -> 3
-    root.nestedChild.anotherNestedChild.grandChild.$.root() // -> point back to root node
+    // note that ":" here has no special effect
+    // just for easier recognition as dynamic (think backend router system)
+    root[':organization'][':user'].$.path({
+      args: {
+        ':organization': 'test-org',
+        ':user': 'test-user',
+      }
+    });
+    // -> 'https://api.domain.example/test-org/test-user'
+
+    root.auth.logout.$.depth(); // -> 3
+    root.auth.oauth.discord.$.root() // -> point back to root node
     ```
 
     > the `$` getter returns the [TNodePublicApi][api.TNodePublicApi] collection of methods.
