@@ -181,16 +181,12 @@ describe.concurrent('TNode | $.serialize & TNode | ::from', () => {
 
   test('default serializer should keep data as is', () => {
     const serialized = root.$.serialize();
-    expect(JSON.stringify(serialized)).toMatchInlineSnapshot(
-      '"{\\"key\\":\\"root\\",\\"children\\":[{\\"key\\":\\"child\\",\\"children\\":[{\\"key\\":\\"grandChild\\",\\"children\\":[],\\"data\\":{}}],\\"data\\":{}},{\\"key\\":\\"anotherChild\\",\\"children\\":[],\\"data\\":{}}],\\"data\\":{\\"number\\":1,\\"string\\":\\"string\\",\\"boolean\\":true,\\"object\\":{\\"nested\\":\\"nested\\"},\\"array\\":[{\\"id\\":\\"test\\"}],\\"specials\\":{\\"date\\":\\"2022-08-18T00:00:00.000Z\\",\\"node\\":{\\"_parent\\":null,\\"_key\\":\\"example\\",\\"_depth\\":1,\\"_pathSegments\\":[\\"example\\"],\\"_children\\":[],\\"_data\\":{}},\\"map\\":{},\\"set\\":{}}}}"',
-    );
+    expect(JSON.stringify(serialized, null, 2)).toMatchSnapshot();
   });
 
   test('off dataSerializer should ignore data', () => {
     const serialized = root.$.serialize({ dataSerializer: false });
-    expect(JSON.stringify(serialized)).toMatchInlineSnapshot(
-      '"{\\"key\\":\\"root\\",\\"children\\":[{\\"key\\":\\"child\\",\\"children\\":[{\\"key\\":\\"grandChild\\",\\"children\\":[],\\"data\\":{}}],\\"data\\":{}},{\\"key\\":\\"anotherChild\\",\\"children\\":[],\\"data\\":{}}],\\"data\\":{}}"',
-    );
+    expect(JSON.stringify(serialized, null, 2)).toMatchSnapshot();
   });
 
   test('custom dataSerializer', () => {
@@ -201,16 +197,12 @@ describe.concurrent('TNode | $.serialize & TNode | ::from', () => {
         return rest;
       },
     });
-    expect(JSON.stringify(serialized)).toMatchInlineSnapshot(
-      '"{\\"key\\":\\"root\\",\\"children\\":[{\\"key\\":\\"child\\",\\"children\\":[{\\"key\\":\\"grandChild\\",\\"children\\":[],\\"data\\":{}}],\\"data\\":{}},{\\"key\\":\\"anotherChild\\",\\"children\\":[],\\"data\\":{}}],\\"data\\":{\\"number\\":1,\\"string\\":\\"string\\",\\"boolean\\":true,\\"object\\":{\\"nested\\":\\"nested\\"},\\"array\\":[{\\"id\\":\\"test\\"}]}}"',
-    );
+    expect(JSON.stringify(serialized, null, 2)).toMatchSnapshot();
   });
 
   test('turn on verbose', () => {
     const serialized = root.$.serialize({ verbose: true });
-    expect(JSON.stringify(serialized)).toMatchInlineSnapshot(
-      '"{\\"key\\":\\"root\\",\\"children\\":[{\\"key\\":\\"child\\",\\"children\\":[{\\"key\\":\\"grandChild\\",\\"children\\":[],\\"data\\":{},\\"depth\\":3,\\"isRoot\\":false,\\"path\\":\\"root/child/grandChild\\",\\"pathSegments\\":[\\"root\\",\\"child\\",\\"grandChild\\"]}],\\"data\\":{},\\"depth\\":2,\\"isRoot\\":false,\\"path\\":\\"root/child\\",\\"pathSegments\\":[\\"root\\",\\"child\\"]},{\\"key\\":\\"anotherChild\\",\\"children\\":[],\\"data\\":{},\\"depth\\":2,\\"isRoot\\":false,\\"path\\":\\"root/anotherChild\\",\\"pathSegments\\":[\\"root\\",\\"anotherChild\\"]}],\\"data\\":{\\"number\\":1,\\"string\\":\\"string\\",\\"boolean\\":true,\\"object\\":{\\"nested\\":\\"nested\\"},\\"array\\":[{\\"id\\":\\"test\\"}],\\"specials\\":{\\"date\\":\\"2022-08-18T00:00:00.000Z\\",\\"node\\":{\\"_parent\\":null,\\"_key\\":\\"example\\",\\"_depth\\":1,\\"_pathSegments\\":[\\"example\\"],\\"_children\\":[],\\"_data\\":{}},\\"map\\":{},\\"set\\":{}}},\\"depth\\":1,\\"isRoot\\":true,\\"path\\":\\"root\\",\\"pathSegments\\":[\\"root\\"]}"',
-    );
+    expect(JSON.stringify(serialized, null, 2)).toMatchSnapshot();
   });
 
   test('construct node from serialized', () => {

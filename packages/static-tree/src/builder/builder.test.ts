@@ -28,23 +28,25 @@ export const TNODE_MOCK_DATA = {
 const { node: sTree } = tBuild('key', {
   pathResolver: () => 'customPathSegment',
   build: (builder) =>
-    builder.addData(TNODE_MOCK_DATA).addChild('child', {
-      build: (builder) =>
-        builder
-          .addChild('justKey')
-          .addChild(new ExtendedTNodeBuilder('external'))
-          .addChild('tBuild', {
-            build: (builder) =>
-              builder
-                .addChild(tBuild('tBuildJustKey').builder)
-                .addChild(tBuild(new ExtendedTNodeBuilder('tBuildWithBuilder')).builder)
-                .addChild(
-                  tBuild('tBuildFull', {
-                    build: (builder) => builder.addChild('final'),
-                  }).builder,
-                ),
-          }),
-    }),
+    builder
+      .addData(TNODE_MOCK_DATA)
+      .addChild('child', {
+        build: (builder) =>
+          builder
+            .addChild('justKey')
+            .addChild(new ExtendedTNodeBuilder('external'))
+            .addChild('tBuild', {
+              build: (builder) =>
+                builder
+                  .addChild(tBuild('tBuildJustKey').builder)
+                  .addChild(tBuild(new ExtendedTNodeBuilder('tBuildWithBuilder')).builder)
+                  .addChild(
+                    tBuild('tBuildFull', {
+                      build: (builder) => builder.addChild('final'),
+                    }).builder,
+                  ),
+            }),
+      })
 });
 
 describe('tBuild', () => {
@@ -97,6 +99,13 @@ describe('real life example test', () => {
         })
         .addChild('camelCaseKey', {
           pathResolver: () => 'camel-case-key',
+        })
+        .addChild(':organization', {
+          pathResolver: (_, arg) => arg,
+          build: (builder) =>
+            builder.addChild(':user', {
+              pathResolver: (_, arg) => arg,
+            }),
         }),
   });
 
@@ -114,5 +123,13 @@ describe('real life example test', () => {
     expect(api.auth.nestedCamelCaseKey.$.path()).toBe(
       'https://api.domain.example/auth/nested-camel-case-key',
     );
+  });
+  test('dynamic arguments should work', () => {
+    expect(api[':organization'][':user'].$.path({
+      args: {
+        ':organization': 'test-org',
+        ':user': 'test-user',
+      },
+    })).toEqual('https://api.domain.example/test-org/test-user');
   });
 });

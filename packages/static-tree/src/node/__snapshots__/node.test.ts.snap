@@ -1,0 +1,173 @@
+// Vitest Snapshot v1
+
+exports[`TNode | $.serialize & TNode | ::from > construct node from serialized 1`] = `
+"{
+  \\"key\\": \\"root\\",
+  \\"children\\": [
+    {
+      \\"key\\": \\"child\\",
+      \\"children\\": [
+        {
+          \\"key\\": \\"grandChild\\",
+          \\"children\\": [],
+          \\"data\\": {}
+        }
+      ],
+      \\"data\\": {}
+    },
+    {
+      \\"key\\": \\"anotherChild\\",
+      \\"children\\": [],
+      \\"data\\": {}
+    }
+  ],
+  \\"data\\": {
+    \\"number\\": 1,
+    \\"string\\": \\"string\\",
+    \\"boolean\\": true,
+    \\"object\\": {
+      \\"nested\\": \\"nested\\"
+    },
+    \\"array\\": [
+      {
+        \\"id\\": \\"test\\"
+      }
+    ],
+    \\"specials\\": {
+      \\"date\\": \\"2022-08-18T00:00:00.000Z\\",
+      \\"node\\": {
+        \\"_children\\": [],
+        \\"_key\\": \\"example\\",
+        \\"_data\\": {},
+        \\"_parent\\": null,
+        \\"_depth\\": 1
+      },
+      \\"map\\": {},
+      \\"set\\": {}
+    }
+  }
+}"
+`;
+
+exports[`TNode | $.serialize & TNode | ::from > construct node from serialized 2`] = `
+"{
+  \\"key\\": \\"root\\",
+  \\"children\\": [
+    {
+      \\"key\\": \\"child\\",
+      \\"children\\": [
+        {
+          \\"key\\": \\"grandChild\\",
+          \\"children\\": [],
+          \\"data\\": {}
+        }
+      ],
+      \\"data\\": {}
+    },
+    {
+      \\"key\\": \\"anotherChild\\",
+      \\"children\\": [],
+      \\"data\\": {}
+    }
+  ],
+  \\"data\\": {}
+}"
+`;
+
+exports[`TNode | $.serialize & TNode | ::from > construct node from serialized 3`] = `
+"{
+  \\"key\\": \\"root\\",
+  \\"children\\": [
+    {
+      \\"key\\": \\"child\\",
+      \\"children\\": [
+        {
+          \\"key\\": \\"grandChild\\",
+          \\"children\\": [],
+          \\"data\\": {}
+        }
+      ],
+      \\"data\\": {}
+    },
+    {
+      \\"key\\": \\"anotherChild\\",
+      \\"children\\": [],
+      \\"data\\": {}
+    }
+  ],
+  \\"data\\": {
+    \\"number\\": 1,
+    \\"string\\": \\"string\\",
+    \\"boolean\\": true,
+    \\"object\\": {
+      \\"nested\\": \\"nested\\"
+    },
+    \\"array\\": [
+      {
+        \\"id\\": \\"test\\"
+      }
+    ]
+  }
+}"
+`;
+
+exports[`TNode | $.serialize & TNode | ::from > construct node from serialized 4`] = `
+"{
+  \\"key\\": \\"root\\",
+  \\"children\\": [
+    {
+      \\"key\\": \\"child\\",
+      \\"children\\": [
+        {
+          \\"key\\": \\"grandChild\\",
+          \\"children\\": [],
+          \\"data\\": {},
+          \\"depth\\": 3,
+          \\"isRoot\\": false,
+          \\"path\\": \\"root/child/grandChild\\"
+        }
+      ],
+      \\"data\\": {},
+      \\"depth\\": 2,
+      \\"isRoot\\": false,
+      \\"path\\": \\"root/child\\"
+    },
+    {
+      \\"key\\": \\"anotherChild\\",
+      \\"children\\": [],
+      \\"data\\": {},
+      \\"depth\\": 2,
+      \\"isRoot\\": false,
+      \\"path\\": \\"root/anotherChild\\"
+    }
+  ],
+  \\"data\\": {
+    \\"number\\": 1,
+    \\"string\\": \\"string\\",
+    \\"boolean\\": true,
+    \\"object\\": {
+      \\"nested\\": \\"nested\\"
+    },
+    \\"array\\": [
+      {
+        \\"id\\": \\"test\\"
+      }
+    ],
+    \\"specials\\": {
+      \\"date\\": \\"2022-08-18T00:00:00.000Z\\",
+      \\"node\\": {
+        \\"_children\\": [],
+        \\"_key\\": \\"example\\",
+        \\"_data\\": {},
+        \\"_parent\\": null,
+        \\"_depth\\": 1
+      },
+      \\"map\\": {},
+      \\"set\\": {}
+    }
+  },
+  \\"depth\\": 1,
+  \\"isRoot\\": true,
+  \\"path\\": \\"root\\"
+}"
+`;

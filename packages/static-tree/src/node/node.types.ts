@@ -35,7 +35,7 @@ export interface TNodeInit<D extends Record<string, any> = {}> {
    * @param node - {@link TNode}
    * @returns string
    */
-  pathResolver?: (node: TNode) => string;
+  pathResolver?: (node: TNode, arg: any) => string;
 }
 
 /**
@@ -43,7 +43,7 @@ export interface TNodeInit<D extends Record<string, any> = {}> {
  *
  * Instruction on how to construct path to / from current node
  */
-export interface TNodeGetPathParams {
+export interface TNodeGetPathParams<FamilyKeys extends string> {
   /**
    * Instruction on how to join path segments. Defaults to `/`
    *
@@ -95,6 +95,12 @@ export interface TNodeGetPathParams {
    * ```
    */
   till?: TNode;
+  /**
+   * args for dynamic path segments, for example a path such as `/user/:id`
+   *
+   * @example
+   */
+  args?: Partial<Record<FamilyKeys, string>>;
 }
 
 /**
@@ -102,7 +108,7 @@ export interface TNodeGetPathParams {
  *
  * Instruction on how to serialize the current node
  */
-export interface TNodeSerializeOptions<V extends boolean, D extends TNodeData> {
+export interface TNodeSerializeOptions<V extends boolean, D extends TNodeData, FamilyKeys extends string> {
   /**
    * Instruction on how to serialize internal data of {@link TNode}.
    *
@@ -119,6 +125,10 @@ export interface TNodeSerializeOptions<V extends boolean, D extends TNodeData> {
    * Otherwise, it'll be {@link MinimalSerializedTNode}.
    */
   verbose?: V;
+  /**
+   * instructions to construct paths during serialization, same as in `$.path()`
+   */
+  paths?: TNodeGetPathParams<FamilyKeys>;
 }
 
 /**
@@ -206,16 +216,16 @@ export type TNodeData = Record<string, any>;
  * The proxy api intended for public use.
  * Refer to {@link TNode} for documentation of each method.
  */
-export interface TNodePublicApi<D extends TNodeData> {
-  key: TNode<D>['$key'];
-  depth: TNode<D>['$depth'];
-  path: TNode<D>['$path'];
-  root: TNode<D>['$root'];
-  isRoot: TNode<D>['$isRoot'];
-  children: TNode<D>['$children'];
-  parent: TNode<D>['$parent'];
-  serialize: TNode<D>['$serialize'];
-  data: TNode<D>['$data'];
+export interface TNodePublicApi<D extends TNodeData, K extends string, AK extends string> {
+  key: TNode<D, K, AK>['$key'];
+  depth: TNode<D, K, AK>['$depth'];
+  path: TNode<D, K, AK>['$path'];
+  root: TNode<D, K, AK>['$root'];
+  isRoot: TNode<D, K, AK>['$isRoot'];
+  children: TNode<D, K, AK>['$children'];
+  parent: TNode<D, K, AK>['$parent'];
+  serialize: TNode<D, K, AK>['$serialize'];
+  data: TNode<D, K, AK>['$data'];
 }
 
 /**
