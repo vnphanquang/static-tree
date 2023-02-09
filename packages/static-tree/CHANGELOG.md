@@ -1,5 +1,11 @@
 # static-tree
 
+## 1.3.0
+
+### Minor Changes
+
+- [`67bb6c2`](https://github.com/vnphanquang/static-tree/commit/67bb6c26704c26ee0b26d68e688e5b51c24682b8) Thanks [@vnphanquang](https://github.com/vnphanquang)! - Added support for runtime dynamic path segment resolution
+
 ## 1.2.0
 
 ### Minor Changes
